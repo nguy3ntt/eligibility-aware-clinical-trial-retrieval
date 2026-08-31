@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eligibility-aware-clinical-trial-retrieval"
+version = "0.1.0"
+description = "Explainable, eligibility-aware clinical-trial retrieval for synthetic patient profiles"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.27,<1",
+  "pydantic-settings>=2.6,<3",
+  "uvicorn[standard]>=0.32,<1",
+]
+
+[project.optional-dependencies]
+database = [
+  "alembic>=1.14,<2",
+  "psycopg[binary]>=3.2,<4",
+  "qdrant-client>=1.12,<2",
+  "sqlalchemy>=2.0,<3",
+]
+ml = [
+  "bm25s>=0.2,<1",
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<3",
+  "scikit-learn>=1.5,<2",
+  "scipy>=1.14,<2",
+  "sentence-transformers>=3.3,<6",
+]
+dev = [
+  "mypy>=1.13,<2",
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<8",
+  "ruff>=0.8,<1",
+]
+
+[tool.setuptools.packages.find]
+include = ["backend*", "pipelines*", "evaluation*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["backend/tests", "pipelines/tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.tox/
+.nox/
+build/
+dist/
+.coverage.*
+coverage.xml
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local agent instructions, sessions, and scratch files (never publish)
+AGENTS.md
+AGENTS.local.md
+.agents/
+.codex/
+tmp/
+temp/
+*.tmp
+.ipynb_checkpoints/
+
+# Generated data and model artifacts
+data/*
+!data/README.md
+!data/raw/
+!data/interim/
+!data/processed/
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/README.md
+!data/interim/README.md
+!data/processed/README.md
+artifacts/
+models/
+*.parquet
+*.npy
+*.npz
+
+# Local database and vector storage
+postgres_data/
+qdrant_storage/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Logs and reports
+*.log
+evaluation/reports/*
+!evaluation/reports/README.md
+evaluation/data/topics/*
+evaluation/data/qrels/*
+!evaluation/data/topics/README.md
+!evaluation/data/qrels/README.md
