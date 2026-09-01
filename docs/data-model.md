@@ -34,7 +34,7 @@ Canonical source content receives a deterministic hash. Unchanged records should
 
 Missing values must remain distinct from negative values. For example, an absent maximum age is not the same as a maximum age of zero, and an unmentioned medication is not evidence that the patient is not taking it.
 
-## Milestone 1 canonical trial proposal
+## Observed canonical trial proposal
 
 This proposal follows the [500-record inspection](experiments/0001-bounded-data-inspection.md). It does not add database models or normalize source text yet. A canonical record must distinguish source identity from record version; the same NCT ID in the current API and the historical TREC corpus is not the same evidence version.
 
@@ -59,4 +59,6 @@ For age bounds, do not convert months or years into a fixed number of days witho
 
 Synthetic case identity is `(benchmark_release, topic_id)`, e.g. `trec-ct-2022:1`. Judgment identity is `(benchmark_release, topic_id, trial_id)` with original integer grade, qrel line, source checksum, and corpus version. Do not merge topic numbers across releases or assume an unjudged pair is irrelevant.
 
-Before implementing this proposal, review the ten patient–trial pairs and settle how historical corpus versions will be represented. No learned outputs or deterministic eligibility rules exist at this stage.
+Ten topic–trial source reviews support this proposal. Retrieval experiments must retain a distinct historical corpus version and must not replace it with current API content. No learned outputs or deterministic eligibility rules exist at this stage.
+
+The proposal is accepted as the input contract for the retrieval renderer, subject to validation against the historical corpus. SQL models and migrations remain deferred until retrieval experiments demonstrate a persistence requirement.

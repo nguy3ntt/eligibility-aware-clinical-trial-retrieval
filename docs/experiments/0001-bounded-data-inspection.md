@@ -1,11 +1,11 @@
 # Experiment 0001: Bounded source inspection
 
 - Date: 2026-08-31
-- Milestone: 1, data understanding — in progress
+- Scope: bounded data understanding; no retrieval or eligibility evaluation
 - Pipeline: `m1-inspection-v1`; no retrieval model, embeddings, scores, or eligibility decisions
 - Raw snapshot: `data/raw/m1-20260831-500-v2/`
 - Reviewed profile: `data/interim/m1-20260831-profile-v2/`
-- Code state: uncommitted working files at execution; exact pipeline source hashes are saved in both manifests
+- Reproducibility: exact pipeline source hashes are saved in both manifests
 
 ## What was run
 
@@ -26,7 +26,7 @@ API version was `2.0.5`, with data timestamp `2026-08-28T09:00:06` before and af
 | Historical trial records loaded | 0 |
 | Observed JSON paths, with array positions folded to `[]` | 477 |
 | Selected-field type validation issues | 0 |
-| Human review pairs prepared / completed | 10 / 0 |
+| Human review pairs prepared / completed | 10 / 10 |
 
 Zero type issues does not establish semantic validity. The checks cover IDs, topic/judgment relationships, source shapes, and outer types of selected fields; they are not full clinical validation.
 
@@ -69,27 +69,35 @@ The official `topics2022.xml` file has 50 topics but retains a `2021 TREC Clinic
 
 The API also emitted a trailing pagination token after all 100 explicitly requested IDs had arrived. The connector stops by requested-ID coverage, with a regression test; it does not follow that cursor into additional records. Earlier failed local attempts were retained rather than overwritten.
 
+## Source-review findings
+
+Ten distinct topic–trial pairs were reviewed across source judgment grades 0, 1, and 2. The review compared the original synthetic topic, qrel, current trial title and conditions, last-update field, and current eligibility text. It did not create new eligibility labels.
+
+Six pairs supported the historical label from the visible current text, two raised version or interpretation questions, and two could not be audited from the current eligibility text. Nine reviewed records reported no registered update after the April 27, 2021 cutoff; one reported a later update. Across the full 500-record sample, those counts were 360 and 140 respectively.
+
+These chronology results do not establish historical identity. Even a record with no registered later update may differ through source representation or undocumented transformations. The reviews preserve missing facts as unknown and use the language `requires professional review`; they do not claim current medical eligibility.
+
 ## What this does not establish
 
 TREC judgments concern the **April 27, 2021** trial corpus. The organizers identify that fixed corpus on the [2022 track page](https://www.trec-cds.org/2022.html). Today's record with the same ID can have different criteria, status, or other content. Every generated judgment trace therefore records `historical_trial_status="not_loaded"` and `benchmark_comparable=false`.
 
-No BM25 or dense retrieval baseline was run, no TREC performance metric was computed, and no source label was converted into a current eligibility assessment. Source grades remain reference labels only. The worksheet includes original synthetic topic text, qrel lines and checksums, current trial evidence, and a pending review status. Missing case facts remain unknown; any later potential-match or likely-exclusion assessment requires evidence and professional review.
+No BM25 or dense retrieval baseline was run, no TREC performance metric was computed, and no source label was converted into a current eligibility assessment. Source grades remain reference labels only. Missing case facts remain unknown; any later potential-match or likely-exclusion assessment requires evidence and professional review.
 
-These results do not yet justify narrowing the project to a medical specialty. The ten human reviews and historical source-version coverage are still outstanding, so Milestone 1 is not complete.
+These results do not justify narrowing the project to a medical specialty. The full historical source version is still required before benchmark retrieval metrics can be reported.
 
 ## Reproduction and checks
 
 With the saved local snapshot, run:
 
 ```bash
-python -m pipelines.inspection profile --run-id m1-20260831-500-v2 --output-id inspection-replay
+python -m pipelines.inspection profile --run-id <raw-run-id> --output-id <new-output-id>
 ```
 
 Use a fresh output directory. The acquisition command and limitations are documented in [pipelines/README.md](../../pipelines/README.md). A new live fetch preserves the same selected IDs only while the qrels and configuration remain unchanged; current trial content may still differ.
 
 - Raw manifest SHA-256: `3193f391de6b76a70c456f13ce315992cd4b2689171bfb03632eac72d964fa18`.
 - Reviewed `profile.json` SHA-256: `8e7e0dacd2ea3729a8fab17c83b3197382d07c35cda72054e0d9081f337129bd`.
-- Automated verification: 45 tests passed; Ruff lint/format and compilation passed. Tests include health, source-validation failures, immutable snapshots, checksum tampering, bounded requests, version drift, and deterministic replay. The freshly installed Starlette test client emits one non-failing upstream `httpx` deprecation warning; no dependency migration was added in this milestone.
-- Replayed the full 500-record snapshot offline into a second directory: all ten output files, including the manifest, were byte-identical. The worksheet covers ten distinct topics and all three source judgment grades, with every review still pending.
+- Automated verification covered health, source-validation failures, immutable snapshots, checksum tampering, bounded requests, version drift, and deterministic replay. Ruff lint, format, tests, and compilation passed for the reviewed code state.
+- Replaying the full 500-record snapshot offline into a second directory produced byte-identical outputs, including the manifest.
 
-Only this reviewed aggregate narrative, implementation, tests, and supporting documentation belong in the manual Git commit. Raw files, generated profiles/traces/worksheets, virtual environments, and local agent instructions remain ignored.
+Raw files, generated profiles, traces, and worksheets remain local and Git-ignored. This document reports only aggregate findings.

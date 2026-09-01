@@ -1,6 +1,6 @@
 # Frontend
 
-The frontend is planned for Milestone 11. It will use React and TypeScript after the API contract and core evaluation are stable.
+The frontend will use React and TypeScript after the API contract and core evaluation are stable.
 
 ## Planned pages
 

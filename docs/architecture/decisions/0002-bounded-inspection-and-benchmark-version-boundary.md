@@ -6,7 +6,7 @@
 
 ## Context
 
-Milestone 1 needs observed data before database schemas or retrieval infrastructure. The official TREC 2022 topics are synthetic, but its judgments concern the April 27, 2021 trial snapshot. Fetching today's record by the same NCT ID does not recover that historical version.
+The data design needs observed source data before database schemas or retrieval infrastructure. The official TREC 2022 topics are synthetic, but its judgments concern the April 27, 2021 trial snapshot. Fetching today's record by the same NCT ID does not recover that historical version.
 
 ## Decision
 
@@ -24,7 +24,8 @@ Treat the observed stale year attribute in `topics2022.xml` as a narrow, checksu
 - Live refetches need not reproduce the same content; the API data timestamp and bytes can change.
 - This is a sample of judged IDs and is biased toward the historical benchmark pool. It does not justify a registry-wide missingness estimate or a medical-area specialization.
 - All source downloads and generated outputs stay Git-ignored. Reviewed aggregate notes, code, and tests may be published.
-- Human review and historical trial traceability remain Milestone 1 work; no TREC score is claimed from this sample.
+- Ten manual source-consistency reviews complete the bounded inspection without producing eligibility assessments.
+- All 500 selected trial IDs are traceable to current records and judgments. The full historical corpus remains a mandatory prerequisite for benchmark retrieval; no TREC score is claimed from this sample.
 - Schema fields remain proposals, not premature database migrations.
 
 ## Alternatives considered
@@ -37,5 +38,7 @@ Treat the observed stale year attribute in `topics2022.xml` as a narrow, checksu
 ## Validation
 
 Offline tests cover strict topic/qrel validation, deterministic selection, explicit coverage gaps, immutable run directories, checksum failures, transient HTTP errors, API version drift, and replay identity. The first observed run is documented in [experiment 0001](../../experiments/0001-bounded-data-inspection.md).
+
+The source review also checks current-record chronology against the April 27, 2021 cutoff. A date at or before the cutoff is recorded only as `no_registered_update_after_cutoff`; it is never promoted to checksum-verified historical equivalence. Aggregate review findings are documented in [experiment 0001](../../experiments/0001-bounded-data-inspection.md).
 
 Primary references: [TREC 2022 track](https://www.trec-cds.org/2022.html), [NIST topics and qrels](https://trec.nist.gov/data/trials2022.html), and [ClinicalTrials.gov API](https://clinicaltrials.gov/data-api/api).

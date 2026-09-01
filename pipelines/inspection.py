@@ -1,4 +1,4 @@
-"""Milestone 1 bounded acquisition and deterministic, offline source profiling."""
+"""Bounded acquisition and deterministic, offline source profiling."""
 
 import argparse
 import json

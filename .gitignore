@@ -39,6 +39,14 @@ temp/
 *.tmp
 .ipynb_checkpoints/
 
+# Local planning, handoff, and release-review state (never publish)
+docs/milestones.md
+docs/testing.md
+docs/experiments/*-milestone-*-closure.md
+evaluation/data/fixtures/m*_pair_reviews.json
+pipelines/milestone*.py
+pipelines/tests/test_milestone*.py
+
 # Generated data and model artifacts
 data/*
 !data/README.md

@@ -48,7 +48,7 @@ Planned functions:
 
 No database ingestion, retrieval index, patient extraction, or eligibility decision system is implemented.
 
-## Milestone 1 inspection commands
+## Bounded inspection commands
 
 Run these commands from the project root after installing `pip install -e ".[dev]"` in a Python 3.11+ environment:
 
@@ -68,10 +68,10 @@ Each run uses a **new** directory under `data/raw/`. Exact decoded HTTP response
 
 The 2022 topics file currently has a stale `task="2021 TREC Clinical Trials"` attribute. The loader accepts that exception only for the exact inspected SHA-256 embedded in `connectors/trec.py`, retains the source attribute, and reports a warning. It does not accept arbitrary 2021 topics as 2022. If the mismatched file changes, inspect the official source and update the documented checksum deliberately. The original raw file is never repaired in place.
 
-`profile` verifies checksums before reading source records and writes a new directory under `data/interim/`. To reproduce the recorded run offline:
+`profile` verifies checksums before reading source records and writes a new directory under `data/interim/`. To reproduce a saved run offline:
 
 ```bash
-python -m pipelines.inspection profile --run-id m1-20260831-500-v2 --output-id inspection-replay
+python -m pipelines.inspection profile --run-id <raw-run-id> --output-id <new-output-id>
 ```
 
 Use a fresh output ID every time. A new live fetch can differ as source data change; replaying the same saved bytes with the same code is deterministic.
@@ -87,7 +87,7 @@ Use a fresh output ID every time. A new live fetch can differ as source data cha
 | `pair-review.jsonl` | Up to ten distinct trials across judgment grades, preferring distinct topics; review and system assessment remain unset |
 | `manifest.json` | Input manifest checksum, configuration, code hashes, and output checksums |
 
-All generated outputs stay local. Commit reviewed aggregate findings under `docs/experiments/`, not these files.
+All generated outputs stay local. Publish only reviewed aggregate findings under `docs/experiments/`.
 
 ## Interpretation and validation limits
 
@@ -97,7 +97,7 @@ All generated outputs stay local. Commit reviewed aggregate findings under `docs
 - Eligibility heading detection only looks for two literal marker strings. It is not an atomic criterion parser or a measured parser-accuracy result.
 - TREC grades 0/1/2 are preserved as source benchmark labels. They are not model predictions or current medical eligibility assessments.
 - Current API records can differ from the frozen April 27, 2021 TREC corpus. Every trace says `historical_trial_status="not_loaded"` and `benchmark_comparable=false`. Do not use this sample to claim TREC retrieval metrics.
-- The ten prepared pairs require human review. No automatic eligibility judgment is produced, and no human review is fabricated.
+- Prepared pairs require explicit source review. No automatic eligibility judgment is produced, and no human review is fabricated.
 
 ## Tests
 

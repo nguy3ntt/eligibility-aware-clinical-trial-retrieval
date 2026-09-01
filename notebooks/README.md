@@ -1,6 +1,6 @@
 # Notebooks
 
-Notebooks are permitted for Milestone 1 data inspection and bounded model exploration.
+Notebooks are permitted for data inspection and bounded model exploration.
 
 Rules:
 

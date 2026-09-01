@@ -83,26 +83,24 @@ flowchart TD
 | `infrastructure/` | Docker Compose, container configuration, and later monitoring |
 | `data/` | Local-only raw/interim/processed data boundaries; large data are Git-ignored |
 | `notebooks/` | Exploration only; production logic must live in Python modules |
-| `docs/` | Architecture, milestones, data contracts, evaluation, safety, and decisions |
+| `docs/` | Architecture, data contracts, evaluation, safety, experiments, and decisions |
 | `scripts/` | Reproducible command wrappers |
 
-See [docs/architecture/README.md](docs/architecture/README.md) for component boundaries and [docs/milestones.md](docs/milestones.md) for the build sequence.
+See [docs/architecture/README.md](docs/architecture/README.md) for component boundaries.
 
-## Current status
+## Current implementation
 
-The repository is at **Milestone 1: data understanding (in progress)**. The foundation includes a minimal health endpoint; retrieval and eligibility features are not yet implemented.
+The repository currently includes a minimal health endpoint and a bounded, reproducible source-inspection pipeline. Retrieval and eligibility features are not yet implemented.
 
-The first bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, and produced field profiles, source traces, and ten pending human-review pairs. Raw downloads and generated reports remain local and Git-ignored.
+The bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, produced field profiles and complete selected-ID traces, and manually inspected ten topic–trial pairs for source consistency. Raw downloads and generated reports remain local and Git-ignored.
 
 Read the [inspection results](docs/experiments/0001-bounded-data-inspection.md) and the [reproduction guide](pipelines/README.md). The [canonical schema proposal](docs/data-model.md) now reflects observed missing fields, age units, partial dates, and multi-valued phases.
 
-Next: complete the ten human pair reviews and resolve trial traceability against the historical TREC corpus. Current API records are **not** the frozen April 2021 benchmark records, so no benchmark metrics or eligibility decisions are claimed.
-
-Do not start with a full-corpus download or criterion embeddings.
+Current API records are **not** checksum-verified copies of the frozen April 2021 benchmark corpus, so no benchmark metrics or eligibility decisions are claimed.
 
 ## Local requirements
 
-Initial documentation work requires only Git and Python. Later milestones use:
+The implemented foundation requires Git and Python. The planned system may also use:
 
 - Python 3.11+
 - Docker Desktop or Docker Engine with Compose
@@ -126,7 +124,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Start the local databases only when a milestone requires them:
+Start the local databases only when working on features that use them:
 
 ```bash
 docker compose -f infrastructure/compose.yaml up -d
@@ -153,13 +151,11 @@ Then open `http://localhost:8000/health` or the generated API documentation at `
 
 ## Documentation
 
-- [Project milestones](docs/milestones.md)
 - [Architecture](docs/architecture/README.md)
 - [Data model](docs/data-model.md)
 - [Evaluation protocol](docs/evaluation.md)
 - [Safety and limitations](docs/safety.md)
 - [Contribution workflow](CONTRIBUTING.md)
-- Local agent instructions (`AGENTS.md`) are intentionally excluded from publication.
 
 ## Licence
 

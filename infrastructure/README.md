@@ -8,7 +8,7 @@ Stores canonical trials, criteria, pipeline state, experiment manifests, and ass
 
 ## Qdrant
 
-Stores rebuildable dense/sparse retrieval indexes and filterable payloads. It becomes active during the vector-database milestone.
+Stores rebuildable dense/sparse retrieval indexes and filterable payloads. It becomes active when vector retrieval is implemented.
 
 ## Commands
 

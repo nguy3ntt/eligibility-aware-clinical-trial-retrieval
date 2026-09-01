@@ -26,4 +26,4 @@ Use PostgreSQL as the authoritative structured store and Qdrant as a rebuildable
 
 ## Validation
 
-Milestone 4 must demonstrate that Qdrant can be deleted and reproduced from canonical data plus a versioned embedding configuration.
+Vector-index work must demonstrate that Qdrant can be deleted and reproduced from canonical data plus a versioned embedding configuration.
