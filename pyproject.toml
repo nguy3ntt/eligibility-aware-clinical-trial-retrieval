@@ -43,7 +43,7 @@ include = ["backend*", "pipelines*", "evaluation*"]
 
 [tool.pytest.ini_options]
 addopts = "-q"
-testpaths = ["backend/tests", "pipelines/tests"]
+testpaths = ["backend/tests", "pipelines/tests", "evaluation/tests"]
 
 [tool.ruff]
 line-length = 100

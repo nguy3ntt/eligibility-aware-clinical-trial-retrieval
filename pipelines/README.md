@@ -102,3 +102,41 @@ All generated outputs stay local. Publish only reviewed aggregate findings under
 ## Tests
 
 `python -m pytest` includes offline pipeline tests as well as the API health check. Tests use tiny invented synthetic records and mocked HTTP; no downloaded topics or trial corpus are required.
+
+## Historical benchmark corpus gate
+
+The TREC Clinical Trials 2021 and 2022 tasks use the same frozen April 27, 2021 ClinicalTrials.gov XML corpus. Acquire the five official archives into a new local snapshot:
+
+```bash
+python -m pipelines.historical_corpus fetch --run-id trec-ct-2021-20210427
+```
+
+If the process is interrupted, rerun it with `--resume`. Downloads remain under an `.incomplete` staging directory until all five archives match the recorded official byte sizes and `Last-Modified` values. A completed snapshot is immutable and cannot be overwritten.
+
+Validate every archive and XML record offline against the official 2022 qrels:
+
+```bash
+python -m pipelines.historical_corpus validate \
+  --run-id trec-ct-2021-20210427 \
+  --output-id trec-ct-2021-20210427-validation \
+  --qrels data/raw/<inspection-run-id>/qrels2022.txt
+```
+
+Validation recomputes each archive SHA-256, verifies ZIP member CRCs and safe paths, parses every XML record, checks NCT IDs against filenames, detects duplicates, profiles renderer fields, and confirms that every judged trial ID is present. It writes a local trial-to-archive provenance index under `data/interim/`. No patient assessment or retrieval metric is produced.
+
+The official download page publishes archive names and approximate sizes but no cryptographic hashes. The acquisition therefore pins exact observed byte sizes and server timestamps, records locally computed SHA-256 values, and states this limitation in its manifest. Benchmark scoring remains blocked if any archive, XML record, expected count, or qrel-coverage check fails.
+
+## Retrieval document rendering
+
+Only a completed historical validation may be rendered:
+
+```bash
+python -m pipelines.render_trials \
+  --run-id trec-ct-2021-20210427 \
+  --validation-id trec-ct-2021-20210427-validation-v2 \
+  --output-id trec-ct-2021-render-v1
+```
+
+The renderer reads the archives without rewriting them and writes one JSON line per trial under `data/processed/`. Each row retains the NCT ID, exact archive/member/CRC provenance, original age/sex metadata, three versioned text representations, and a deterministic content hash. Missing fields add no placeholder text. Output directories are immutable and cannot be reused.
+
+The rendered corpus is an input to retrieval, not a canonical clinical database and not an eligibility decision dataset. All generated documents remain local and Git-ignored.

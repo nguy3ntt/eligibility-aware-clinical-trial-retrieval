@@ -90,13 +90,13 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 ## Current implementation
 
-The repository currently includes a minimal health endpoint and a bounded, reproducible source-inspection pipeline. Retrieval and eligibility features are not yet implemented.
+The repository now includes a minimal health endpoint, a bounded source-inspection pipeline, a resumable validator for the frozen TREC benchmark corpus, and a reproducible full-corpus BM25 retrieval baseline. Eligibility assessment is not yet implemented.
 
 The bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, produced field profiles and complete selected-ID traces, and manually inspected ten topic–trial pairs for source consistency. Raw downloads and generated reports remain local and Git-ignored.
 
-Read the [inspection results](docs/experiments/0001-bounded-data-inspection.md) and the [reproduction guide](pipelines/README.md). The [canonical schema proposal](docs/data-model.md) now reflects observed missing fields, age units, partial dates, and multi-valued phases.
+Read the [inspection results](docs/experiments/0001-bounded-data-inspection.md), the [BM25 baseline report](docs/experiments/0002-bm25-baseline.md), and the [reproduction guide](pipelines/README.md). The [canonical schema proposal](docs/data-model.md) now reflects observed missing fields, age units, partial dates, and multi-valued phases.
 
-Current API records are **not** checksum-verified copies of the frozen April 2021 benchmark corpus, so no benchmark metrics or eligibility decisions are claimed.
+The BM25 metrics use the separately downloaded and validated April 27, 2021 corpus. Current API records remain unsuitable for benchmark scoring. TREC grades are source relevance labels, not current medical eligibility decisions.
 
 ## Local requirements
 

@@ -14,7 +14,11 @@ The project evaluates three different questions separately:
 - Mean Reciprocal Rank
 - Success@5
 - eligible-trial recall
-- relevant-but-excluded retrieval rate
+- relevant-but-excluded recall at 100
+
+For the TREC Clinical Trials 2022 source judgments, grade 2 contributes a gain of 2, grade 1 contributes a gain of 1, and grade 0 contributes no gain to nDCG. MRR and Success@5 treat either grade 1 or 2 as relevant. Eligible-trial recall means recall over source grade 2; relevant-but-excluded recall means recall over source grade 1. These are benchmark labels, not new eligibility assessments.
+
+The Milestone 2 age/sex filter is deliberately conservative. It excludes a trial only when both the synthetic topic and trial metadata provide parseable values that explicitly contradict. Missing or unparseable values remain unknown and are retained.
 
 ## Eligibility metrics
 
