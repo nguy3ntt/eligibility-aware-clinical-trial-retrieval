@@ -20,6 +20,8 @@ For the TREC Clinical Trials 2022 source judgments, grade 2 contributes a gain o
 
 The Milestone 2 age/sex filter is deliberately conservative. It excludes a trial only when both the synthetic topic and trial metadata provide parseable values that explicitly contradict. Missing or unparseable values remain unknown and are retained.
 
+Bounded dense smoke artifacts explicitly prohibit benchmark scoring. Their subset rankings, self-retrieval checks, and numerical-reference checks establish operational correctness only. A fair dense/BM25 comparison requires the full frozen corpus, matched field/input policies, the same topics and judgments, and explicit treatment of model truncation. Similarity scores are not calibrated eligibility probabilities.
+
 ## Eligibility metrics
 
 - accuracy and macro F1;

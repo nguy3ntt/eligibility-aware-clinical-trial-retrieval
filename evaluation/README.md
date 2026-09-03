@@ -19,7 +19,7 @@ Milestone 2 implements BM25 over three versioned trial representations:
 
 Each representation is evaluated with and without a conservative deterministic age/sex compatibility filter. The filter removes only explicit contradictions; missing or unparsed values remain candidates. It is a retrieval ablation and does not assess eligibility.
 
-Dense exact retrieval, HNSW, hybrid retrieval, reranking, and criterion-aware systems remain future work.
+Bounded dense exact retrieval is now available for operational testing. Full-corpus dense evaluation, HNSW, hybrid retrieval, reranking, and criterion-aware systems remain future work.
 
 ## Metrics
 
@@ -53,3 +53,29 @@ python -m evaluation.run_bm25 \
 ```
 
 Every output directory is new and local. It contains indexes, TREC run files, aggregate and per-query metrics, extracted topic demographics, hashes, package versions, parameters, and the selected configuration. See the reviewed [baseline report](../docs/experiments/0002-bm25-baseline.md).
+
+## Bounded dense retrieval
+
+The current dense workflow operates on at most 512 historical trials. It validates model and data handling before full-corpus evaluation. It does not calculate TREC relevance metrics, apply dense age/sex filtering, or determine eligibility.
+
+Prepare the two models and sample indexes using the [pipeline commands](../pipelines/README.md#bounded-dense-preparation). To search an already saved index with an official synthetic topic:
+
+```bash
+python -m evaluation.dense_search --index-id dense-minilm-v2 --topics data/raw/<inspection-run-id>/topics2022.xml --topic-id 15 --top-k 3
+python -m evaluation.dense_search --index-id dense-pubmedbert-v2 --topics data/raw/<inspection-run-id>/topics2022.xml --topic-id 15 --top-k 3
+```
+
+Output includes `status=complete`, `documents_searched`, ordered NCT IDs, cosine scores, titles, model identity, and trial provenance. `eligibility_assessment=not_performed` and `benchmark_metrics_permitted=false` are intentional. A cosine score is not an eligibility probability. There is no arbitrary patient-text entry point; use synthetic TREC topics only. A small sample may contain no relevant trial for a topic, so a successfully executed search can still return poor matches.
+
+All scores come from exact normalized-vector dot products, with stable NCT-ID tie-breaking. The search checks all sample documents in blocks, without a vector database or approximate index. Query encoding must match the saved model revision, snapshot, dimensions, normalization, and prompt. Damaged files or mismatched models fail before returning results.
+
+Run the real-model functional verifier with a fresh report ID:
+
+```bash
+python -m evaluation.dense_smoke --index-id dense-minilm-v2 --topics data/raw/<inspection-run-id>/topics2022.xml --output-id dense-minilm-manual-check
+python -m evaluation.dense_smoke --index-id dense-pubmedbert-v2 --topics data/raw/<inspection-run-id>/topics2022.xml --output-id dense-pubmedbert-manual-check
+```
+
+Expected output: `status=passed`, three synthetic query checks, and eight self-retrieval checks. The verifier repeats encodings and rankings, compares blockwise results with a direct full-matrix reference, and re-encodes saved documents to check document/query consistency. Detailed output stays under ignored `evaluation/reports/`.
+
+`python -m pytest evaluation/tests/test_dense_retrieval.py` runs offline tests with invented fixtures and no model download. Install the `dense` extra to run every dense test; unavailable optional dependencies cause the relevant tests to be skipped. The API still exposes only foundation endpoints; dense searching currently uses the command line.

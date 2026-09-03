@@ -46,7 +46,7 @@ Planned functions:
 - rebuild indexes from canonical data;
 - support controlled embedding-model migrations.
 
-No database ingestion, retrieval index, patient extraction, or eligibility decision system is implemented.
+BM25 indexing and bounded dense-vector preparation are implemented. Database ingestion, general patient extraction, and eligibility assessment remain future work.
 
 ## Bounded inspection commands
 
@@ -140,3 +140,23 @@ python -m pipelines.render_trials \
 The renderer reads the archives without rewriting them and writes one JSON line per trial under `data/processed/`. Each row retains the NCT ID, exact archive/member/CRC provenance, original age/sex metadata, three versioned text representations, and a deterministic content hash. Missing fields add no placeholder text. Output directories are immutable and cannot be reused.
 
 The rendered corpus is an input to retrieval, not a canonical clinical database and not an eligibility decision dataset. All generated documents remain local and Git-ignored.
+
+## Bounded dense preparation
+
+Install the optional local embedding dependencies with `pip install -e ".[dev,dense]"`. They are separate from the larger `ml` extra. The dense preparation interface intentionally caps samples at 512 trials; the reviewed run uses 256.
+
+```bash
+python -m pipelines.dense prepare-model --model minilm
+python -m pipelines.dense prepare-model --model pubmedbert
+python -m pipelines.dense sample --documents-id trec-ct-2021-render-v1 --output-id dense-sample-v1 --limit 256
+python -m pipelines.dense encode --sample-id dense-sample-v1 --output-id dense-minilm-v2 --model minilm
+python -m pipelines.dense encode --sample-id dense-sample-v1 --output-id dense-pubmedbert-v2 --model pubmedbert
+```
+
+Only `prepare-model` uses the network. It downloads pinned public model files into ignored `models/` directories, rejects unsupported modules, and uses safetensors with remote code disabled. It verifies and reuses completed snapshots; interrupted downloads can resume. No account or paid inference service is needed. The following sample, encoding, and search steps load local files only.
+
+Sampling validates the full rendered file and its row hashes, then selects by `SHA256(seed:NCT_ID)` with default seed `dense-smoke-v1`. Queries and judgments do not influence selection. Original raw data and the full rendered file are never changed.
+
+Encoding defaults to the `summary` representation, batch size 16, and four CPU threads. It saves normalized float32 vectors, the corresponding ordered documents, per-document input hashes and truncation counts, model/runtime configuration, code provenance, and artifact checksums. The model's token limit applies to every input; no chunking or hidden prompt is used.
+
+Use new sample/index output IDs when reproducing a run. Existing completed outputs are never overwritten. Failed sample/index runs retain failure evidence and cannot be searched; interrupted runs with no completion manifest are also rejected. Re-encoding uses a fresh output ID. See the [evaluation guide](../evaluation/README.md#bounded-dense-retrieval) for offline search and smoke checks.
