@@ -1,0 +1,9 @@
+# Run from the repository root: qdrant.exe --config-path infrastructure/qdrant-local.yaml
+storage:
+  storage_path: ./qdrant_storage/storage
+  snapshots_path: ./qdrant_storage/snapshots
+service:
+  host: 127.0.0.1
+  http_port: 6333
+  grpc_port: 6334
+telemetry_disabled: true

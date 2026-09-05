@@ -1,5 +1,7 @@
 # Backend
 
+The local Qdrant REST boundary lives in `app/repositories/qdrant.py`. It accepts only loopback servers and checks the collection's artifact/model contract. Pipeline orchestration stays outside the repository. No search HTTP endpoint or eligibility assessment has been added; [the command-line guide](../docs/local-vector-storage.md) describes the current workflow.
+
 The backend will expose stable application contracts and orchestrate services. It must not contain source-specific ingestion logic or notebook-derived hidden state.
 
 ## Planned routes

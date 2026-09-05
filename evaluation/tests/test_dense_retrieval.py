@@ -15,6 +15,7 @@ np = pytest.importorskip("numpy")
 from evaluation.baselines.dense import exact_top_k
 from evaluation.dense_search import search_topic
 from evaluation.dense_smoke import verify_smoke
+from evaluation.run_dense_diagnostic import balanced_ids
 from evaluation.tests.test_retrieval_baseline import synthetic_trial
 from pipelines.connectors.snapshots import write_json
 from pipelines.dense import local_id
@@ -351,3 +352,17 @@ def test_unsupported_model_module_is_not_marked_complete(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="remote code"):
         prepare_model(spec, tmp_path)
     assert not (model_directory(tmp_path, spec) / "snapshot.json").exists()
+
+
+def test_balanced_diagnostic_pool_is_deterministic_and_keeps_available_grades():
+    qrels = [
+        {"topic_id": "1", "trial_id": f"NCT0000000{i}", "grade": grade}
+        for grade, values in enumerate(((1, 2, 3), (4,), (5, 6, 7)))
+        for i in values
+    ]
+    selected = balanced_ids(qrels, per_grade=2, seed="fixture")
+    assert selected == balanced_ids(list(reversed(qrels)), per_grade=2, seed="fixture")
+    assert "NCT00000004" in selected
+    assert len(selected) == 5
+    with pytest.raises(ValueError, match="no grade-1"):
+        balanced_ids([row for row in qrels if row["grade"] != 1], per_grade=1)

@@ -1,5 +1,9 @@
 # Evaluation
 
+## Local Qdrant verification
+
+`python -m evaluation.qdrant_smoke --topics data/raw/<inspection-run-id>/topics2022.xml --output-id <fresh-report-id>` verifies stored evidence and compares exact Qdrant results with a direct NumPy reference for every supplied synthetic topic, with and without conservative demographics filtering. Scores must agree within `1e-6`; ordered ID agreement is also reported because boundary ties may differ. This is a bounded correctness check, not an ANN or full-corpus relevance benchmark. Run `evaluation/tests/test_qdrant.py` offline, or set `QDRANT_TEST_URL=http://127.0.0.1:6333` to include its isolated real-server test. That test creates and deletes only a randomly named test collection.
+
 Evaluation is a first-class subsystem, not a notebook added after implementation.
 
 ## Data
@@ -19,7 +23,7 @@ Milestone 2 implements BM25 over three versioned trial representations:
 
 Each representation is evaluated with and without a conservative deterministic age/sex compatibility filter. The filter removes only explicit contradictions; missing or unparsed values remain candidates. It is a retrieval ablation and does not assess eligibility.
 
-Bounded dense exact retrieval is now available for operational testing. Full-corpus dense evaluation, HNSW, hybrid retrieval, reranking, and criterion-aware systems remain future work.
+Bounded dense exact and HNSW retrieval are available for operational testing. Full-corpus dense evaluation, hybrid retrieval, reranking, and criterion-aware systems remain future work.
 
 ## Metrics
 
@@ -30,6 +34,10 @@ The implemented retrieval metrics are nDCG@5/10 with linear TREC-grade gain, MRR
 Every experiment records data, code, model, representation, index, filter, and random-seed versions. Reports must include per-query error analysis and negative results.
 
 Generated reports are ignored by Git unless a deliberately reviewed release report is added.
+
+## ANN and recovery checks
+
+`python -m evaluation.qdrant_ann --topics data/raw/<inspection-run-id>/topics2022.xml --output-id <fresh-id>` compares HNSW efforts 10/32/128 with exact neighbors on identical vectors and filters. It validates the exact reference, measures paired warm HTTP latency, and rejects telemetry that indicates scans or concurrent activity. Recall is neighbor agreement, not relevance or eligibility. Run `pipelines.qdrant_index configure-ann` first. `evaluation.qdrant_recovery_smoke` checks source-text re-encoding and original/restored/rebuilt collections. Full commands and measurement limits are in [the operating guide](../docs/local-vector-storage.md#approximate-search-and-evaluation).
 
 ## Run the baseline
 

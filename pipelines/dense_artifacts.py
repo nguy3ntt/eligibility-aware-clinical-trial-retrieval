@@ -144,6 +144,77 @@ def load_sample(root: Path) -> tuple[dict, list[dict]]:
     return manifest, rows
 
 
+def select_document_ids(
+    source: Path,
+    output: Path,
+    trial_ids: set[str],
+    *,
+    selection: dict,
+) -> dict:
+    """Build a bounded named pool while still verifying every rendered input byte and row."""
+    if (
+        not trial_ids
+        or len(trial_ids) > MAX_SAMPLE
+        or any(not NCT_ID.fullmatch(trial_id) for trial_id in trial_ids)
+    ):
+        raise ValueError(f"selected IDs must contain 1..{MAX_SAMPLE} valid unique NCT IDs")
+    output.mkdir(parents=True, exist_ok=False)
+    try:
+        manifest_path = source / "manifest.json"
+        manifest = json.loads(manifest_path.read_bytes())
+        if (
+            manifest.get("status") != "complete"
+            or manifest.get("renderer_version") != RENDERER_VERSION
+        ):
+            raise ValueError("a completed versioned historical render is required")
+        record = manifest.get("files", [None])[0]
+        if len(manifest.get("files", [])) != 1 or record.get("path") != "documents.jsonl":
+            raise ValueError("unexpected rendered file inventory")
+        digest = hashlib.sha256()
+        selected = []
+        seen: set[str] = set()
+        byte_count = 0
+        with (source / "documents.jsonl").open("rb") as handle:
+            for number, raw in enumerate(handle, 1):
+                digest.update(raw)
+                byte_count += len(raw)
+                row = json.loads(raw)
+                validate_document(row, number)
+                trial_id = row["trial_id"]
+                if trial_id in seen:
+                    raise ValueError(f"duplicate trial ID at line {number}")
+                seen.add(trial_id)
+                if trial_id in trial_ids:
+                    selected.append(row)
+        if (
+            digest.hexdigest() != record["sha256"]
+            or byte_count != record["bytes"]
+            or len(seen) != manifest["documents"]
+            or {row["trial_id"] for row in selected} != trial_ids
+        ):
+            raise ValueError("rendered corpus integrity or selected-ID coverage check failed")
+        selected.sort(key=lambda row: row["trial_id"])
+        with (output / "documents.jsonl").open("x", encoding="utf-8", newline="\n") as handle:
+            for row in selected:
+                handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+        result = {
+            "status": "complete",
+            "version": SAMPLE_VERSION,
+            "documents": len(selected),
+            "source_documents": len(seen),
+            "selection": selection,
+            "source_manifest_sha256": file_hash(manifest_path),
+            "source_documents_sha256": digest.hexdigest(),
+            "benchmark_metrics_permitted": False,
+            "files": [file_record(output / "documents.jsonl", output)],
+        }
+        write_json(output / "manifest.json", result)
+        return result
+    except Exception as exc:
+        _failure(output, SAMPLE_VERSION, exc)
+        raise
+
+
 def _code_provenance() -> dict:
     root = Path(__file__).resolve().parent.parent
     commit = subprocess.run(

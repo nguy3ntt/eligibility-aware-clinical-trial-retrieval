@@ -8,7 +8,9 @@ Stores canonical trials, criteria, pipeline state, experiment manifests, and ass
 
 ## Qdrant
 
-Stores rebuildable dense/sparse retrieval indexes and filterable payloads. It becomes active when vector retrieval is implemented.
+Stores rebuildable retrieval indexes and filterable payloads. The implementation loads a verified, bounded MiniLM artifact into `trials_v1`, with an `overview_dense` vector and five payload indexes. Exact/ANN evaluation, explicit graph configuration, snapshots, and isolated recovery/rebuild are available. Sparse vectors remain future work.
+
+See [local vector storage](../docs/local-vector-storage.md) for installation, imports, exact search, verification, and troubleshooting. Docker and native Windows use separate persistent stores; choose one at a time.
 
 ## Commands
 

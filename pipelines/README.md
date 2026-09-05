@@ -1,5 +1,11 @@
 # Pipelines
 
+## Local vector database
+
+`python -m pipelines.qdrant_index load|verify|search` transfers an already verified MiniLM `title_conditions` artifact to local Qdrant. Loading uses stable trial IDs, bounded acknowledged batches, an immutable collection contract, and full evidence/vector read-back. It does not encode or download documents. See [local vector storage](../docs/local-vector-storage.md) for runnable examples and limitations.
+
+The same CLI provides `configure-ann`, `snapshot`, `restore`, and `rebuild`. Graph readiness is verified, backups are checksummed, and restore/rebuild require new collections so they cannot overwrite the active index. `search --mode ann --hnsw-ef 128` explicitly requests ANN; exact remains the default. Progress/failure reports and snapshots stay local and Git-ignored.
+
 Pipelines convert public source records into reproducible canonical and indexed data.
 
 ## Connectors

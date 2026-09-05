@@ -68,6 +68,7 @@ models/
 # Local database and vector storage
 postgres_data/
 qdrant_storage/
+.qdrant-initialized
 
 # Frontend
 frontend/node_modules/

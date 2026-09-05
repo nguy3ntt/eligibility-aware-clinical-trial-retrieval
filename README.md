@@ -90,7 +90,7 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 ## Current implementation
 
-The repository now includes a minimal health endpoint, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and a bounded offline dense-retrieval workflow. The dense workflow tests two pinned models on a small historical sample; full-corpus dense evaluation and eligibility assessment are not yet implemented.
+The repository includes a minimal health endpoint, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and a bounded dense-retrieval workflow. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. The dense workflow tests pinned models on a small historical sample; full-corpus dense evaluation and eligibility assessment are not yet implemented.
 
 The bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, produced field profiles and complete selected-ID traces, and manually inspected ten topic–trial pairs for source consistency. Raw downloads and generated reports remain local and Git-ignored.
 
@@ -99,6 +99,8 @@ Read the [inspection results](docs/experiments/0001-bounded-data-inspection.md),
 The BM25 metrics use the separately downloaded and validated April 27, 2021 corpus. Current API records remain unsuitable for benchmark scoring. TREC grades are source relevance labels, not current medical eligibility decisions.
 
 The [dense workflow guide](evaluation/README.md#bounded-dense-retrieval) explains model preparation, sample encoding, offline synthetic-topic search, and real-model checks. Its [reviewed smoke-test report](docs/experiments/0003-bounded-dense-smoke.md) reports operational correctness, resource measurements, and truncation limitations without claiming superiority over BM25.
+
+The [Qdrant diagnostic](docs/experiments/0004-bounded-qdrant-ann-recovery.md) records actual HNSW graph use, exact-versus-ANN neighbor recall and latency, snapshot recovery, and artifact-only rebuilding. Higher effort recovered all exact neighbors on the small pool, but the experiment did not demonstrate a meaningful speed advantage or full-corpus retrieval quality.
 
 ## Local requirements
 
@@ -157,6 +159,7 @@ Then open `http://localhost:8000/health` or the generated API documentation at `
 - [Data model](docs/data-model.md)
 - [Evaluation protocol](docs/evaluation.md)
 - [Safety and limitations](docs/safety.md)
+- [Local vector storage and exact-search checks](docs/local-vector-storage.md)
 - [Contribution workflow](CONTRIBUTING.md)
 
 ## Licence
