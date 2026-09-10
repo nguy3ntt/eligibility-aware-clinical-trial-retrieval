@@ -1,0 +1,118 @@
+{
+  "schema_version": "synthetic-cases-v1",
+  "dataset_id": "patient-fact-rule-contract-v1",
+  "synthetic": true,
+  "annotation_note": "Manually specified invented development cases, not held-out clinical validation. Expected tuples: kind, name, value, unit, exact quote; optional assertion, temporality, experiencer. Defaults present/current/patient; uncertain assertion also means uncertain certainty.",
+  "cases": [
+    {
+      "case_id": "demo-current",
+      "text": "A 52-year-old man has type 2 diabetes. He takes metformin. Hemoglobin 12.5 g/dL. Blood pressure 130/80 mmHg. Chemotherapy is planned.",
+      "expected": [
+        ["age", "age", 52, "year", "52-year-old"],
+        ["sex", "sex", "Male", null, "man"],
+        ["condition", "type_2_diabetes", "type_2_diabetes", null, "type 2 diabetes"],
+        ["medication", "metformin", "metformin", null, "metformin"],
+        ["measurement", "hemoglobin", 12.5, "g/dL", "Hemoglobin 12.5 g/dL"],
+        ["measurement", "systolic_blood_pressure", 130, "mmHg", "Blood pressure 130/80 mmHg"],
+        ["measurement", "diastolic_blood_pressure", 80, "mmHg", "Blood pressure 130/80 mmHg"],
+        ["treatment", "chemotherapy", "chemotherapy", null, "Chemotherapy", "present", "planned"]
+      ],
+      "expected_filters": {"age_days": 18992.61, "sex": "Male"}
+    },
+    {
+      "case_id": "demo-context",
+      "text": "A 45-year-old woman denies asthma and diabetes but has possible pneumonia. Her mother had breast cancer. She previously took warfarin. She is scheduled for surgery.",
+      "expected": [
+        ["age", "age", 45, "year", "45-year-old"],
+        ["sex", "sex", "Female", null, "woman"],
+        ["condition", "asthma", "asthma", null, "asthma", "absent"],
+        ["condition", "diabetes", "diabetes", null, "diabetes", "absent"],
+        ["condition", "pneumonia", "pneumonia", null, "pneumonia", "uncertain"],
+        ["condition", "breast_cancer", "breast_cancer", null, "breast cancer", "present", "historical", "family"],
+        ["medication", "warfarin", "warfarin", null, "warfarin", "present", "historical"],
+        ["treatment", "surgery", "surgery", null, "surgery", "present", "planned"]
+      ],
+      "expected_filters": {"age_days": 16435.9125, "sex": "Female"}
+    },
+    {
+      "case_id": "demo-unknown",
+      "text": "The synthetic patient reports fatigue. Creatinine 7 widgets. No medications are listed.",
+      "expected": [], "expected_filters": {}
+    },
+    {
+      "case_id": "demo-family",
+      "text": "His 70-year-old father has diabetes. The patient has asthma.",
+      "expected": [["age", "age", 70, "year", "70-year-old", "present", "unknown", "family"], ["condition", "diabetes", "diabetes", null, "diabetes", "present", "current", "family"], ["condition", "asthma", "asthma", null, "asthma"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-conflict",
+      "text": "A 45-year-old man has asthma. The patient is 65-year-old. Sex: female.",
+      "expected": [["age", "age", 45, "year", "45-year-old"], ["sex", "sex", "Male", null, "man"], ["condition", "asthma", "asthma", null, "asthma"], ["age", "age", 65, "year", "65-year-old"], ["sex", "sex", "Female", null, "female"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-negation",
+      "text": "Pneumonia is ruled out. Cannot rule out asthma. Not only diabetes but hypertension is present.",
+      "expected": [["condition", "pneumonia", "pneumonia", null, "Pneumonia", "absent"], ["condition", "asthma", "asthma", null, "asthma", "uncertain"], ["condition", "diabetes", "diabetes", null, "diabetes"], ["condition", "hypertension", "hypertension", null, "hypertension"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-infant",
+      "text": "A 7-month-old boy has constipation.",
+      "expected": [["age", "age", 7, "month", "7-month-old"], ["sex", "sex", "Male", null, "boy"], ["condition", "constipation", "constipation", null, "constipation"]],
+      "expected_filters": {"age_days": 213.058125, "sex": "Male"}
+    },
+    {
+      "case_id": "demo-compact",
+      "text": "63F with hypertension. She denies taking aspirin.",
+      "expected": [["age", "age", 63, "year", "63F"], ["sex", "sex", "Female", null, "63F"], ["condition", "hypertension", "hypertension", null, "hypertension"], ["medication", "aspirin", "aspirin", null, "aspirin", "absent"]],
+      "expected_filters": {"age_days": 23010.2775, "sex": "Female"}
+    },
+    {
+      "case_id": "demo-measurements",
+      "text": "Creatinine >= 1.5 mg/dL; HbA1c 7.2 %; weight 80 kg; temperature 37 °C; oxygen saturation 96 %; heart rate 72 bpm.",
+      "expected": [["measurement", "creatinine", 1.5, "mg/dL", "Creatinine >= 1.5 mg/dL"], ["measurement", "hba1c", 7.2, "%", "HbA1c 7.2 %"], ["measurement", "weight", 80, "kg", "weight 80 kg"], ["measurement", "temperature", 37, "C", "temperature 37 °C"], ["measurement", "oxygen_saturation", 96, "%", "oxygen saturation 96 %"], ["measurement", "heart_rate", 72, "bpm", "heart rate 72 bpm"]],
+      "expected_operators": {"creatinine": "ge"}, "expected_filters": {}
+    },
+    {
+      "case_id": "demo-historical",
+      "text": "Previously received chemotherapy. Asthma resolved. The patient was 20-year-old at diagnosis. He stopped metformin.",
+      "expected": [["treatment", "chemotherapy", "chemotherapy", null, "chemotherapy", "present", "historical"], ["condition", "asthma", "asthma", null, "Asthma", "present", "historical"], ["age", "age", 20, "year", "20-year-old", "present", "historical"], ["medication", "metformin", "metformin", null, "metformin", "present", "historical"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-uncertain-age",
+      "text": "The patient is approximately 60-year-old. Possible diabetes.",
+      "expected": [["age", "age", 60, "year", "60-year-old", "uncertain", "unknown"], ["condition", "diabetes", "diabetes", null, "diabetes", "uncertain"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-sex-review",
+      "text": "A 30-year-old transgender woman has asthma.",
+      "expected": [["age", "age", 30, "year", "30-year-old"], ["sex", "sex", "Female", null, "woman"], ["condition", "asthma", "asthma", null, "asthma"]],
+      "expected_filters": {"age_days": 10957.275}
+    },
+    {
+      "case_id": "demo-no-inference",
+      "text": "She has thirst and frequent urination. Glucose is high.",
+      "expected": [], "expected_filters": {}
+    },
+    {
+      "case_id": "demo-treatment",
+      "text": "The patient receives dialysis and takes insulin. No radiotherapy. Immunotherapy is considered.",
+      "expected": [["treatment", "dialysis", "dialysis", null, "dialysis"], ["medication", "insulin", "insulin", null, "insulin"], ["treatment", "radiotherapy", "radiotherapy", null, "radiotherapy", "absent"], ["treatment", "immunotherapy", "immunotherapy", null, "Immunotherapy", "present", "planned"]],
+      "expected_filters": {}
+    },
+    {
+      "case_id": "demo-other",
+      "text": "His friend has asthma. The patient has hypertension.",
+      "expected": [["condition", "asthma", "asthma", null, "asthma", "present", "current", "other"], ["condition", "hypertension", "hypertension", null, "hypertension"]], "expected_filters": {}
+    },
+    {
+      "case_id": "demo-conditional",
+      "text": "If pneumonia develops, consider amoxicillin. There is a risk of stroke.",
+      "expected": [["condition", "pneumonia", "pneumonia", null, "pneumonia", "uncertain"], ["medication", "amoxicillin", "amoxicillin", null, "amoxicillin", "uncertain", "planned"], ["condition", "stroke", "stroke", null, "stroke", "uncertain"]], "expected_filters": {}
+    }
+  ]
+}

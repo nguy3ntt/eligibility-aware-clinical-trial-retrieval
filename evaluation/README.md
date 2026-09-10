@@ -1,5 +1,25 @@
 # Evaluation
 
+## Reranking quality and latency
+
+`python -m evaluation.reranking --output-id <fresh-id>` compares BM25, exact dense and fixed reranked prefixes of 10/20 over the same filtered 443-trial diagnostic and all 50 synthetic topics. It retains complete candidate rankings, pooled qrels, per-topic gains/losses, exact repeated model scores, truncation evidence, top-result explanations and separate warm CPU timings. It does not tune depths or promote defaults using this judgment-selected pool. See [reviewed results](../docs/experiments/0009-bounded-reranking-and-explanations.md) and [manual checks](../docs/reranking-and-explanations.md).
+
+## Research screening and semantic advisories
+
+`python -m evaluation.screening --output-id <fresh-id>` measures exact criterion/trial outcomes on 34 authored synthetic pairs. Optional synthetic cases plus a source artifact add a separate unlabelled historical coverage audit. `python -m evaluation.semantic_screening --output-id <fresh-id>` measures the pinned local NLI model on 24 calibration and 30 disjoint test pairs: raw/scaled accuracy, NLL, Brier/ECE, reliability bins, high-confidence precision and coverage. Test labels never choose temperature or thresholds. The semantic model remains advisory-only; the original public-trial audit currently yields all unknowns. See [reviewed results](../docs/experiments/0008-bounded-screening-and-semantic-verification.md) and [manual checks](../docs/eligibility-verification.md).
+
+## Eligibility parsing and criterion vectors
+
+`python -m evaluation.criteria --output-id <fresh-id>` measures exact source spans, section/type/logic/numeric tuples and parent/order relationships on 10 invented development trials (27 records). `--source-id criteria-source-m7-v3` adds a separate unlabelled historical audit, never an accuracy claim. `python -m evaluation.criteria_index --output-id <fresh-id>` re-encodes every criterion and checks live dense/BM25 search against independent references. Reports retain source, implementation and model fingerprints. See [methods/results](../docs/experiments/0007-bounded-eligibility-parsing.md) and [manual procedures](../docs/eligibility-parsing.md).
+
+## Synthetic patient fact evaluation
+
+`python -m evaluation.patient_facts --output-id <fresh-id>` evaluates 16 manually specified synthetic development cases against exact fact values, spans, context, and expected demographic filters. Add `--topics <topics2022.xml>` for an unlabelled coverage audit, not an accuracy score. Profiles, failures, metrics, runtime versions, and source/code hashes remain in ignored reports. Foundation dependencies suffice; no model download is needed. See [results and limits](../docs/experiments/0006-synthetic-patient-facts.md) and [manual procedures](../docs/patient-facts.md).
+
+## Hybrid ablation
+
+`python -m evaluation.hybrid --topics <synthetic-topics.xml> --qrels <qrels.txt> --output-id <fresh-id>` compares dense, sparse, and equal-weight RRF with and without the same conservative age/sex filters. Database branches must match independent dense-matrix and BM25 references before metrics are accepted. Runs retain branch/rank/score/source provenance, per-query metrics, hashes, and truncation. The [reviewed diagnostic](../docs/experiments/0005-bounded-hybrid-ablation.md) records improved Recall@100 but worse nDCG@10 than dense; dense stays the default. This judged pool is not a full-corpus or held-out benchmark. See [manual commands and expected results](../docs/hybrid-retrieval.md).
+
 ## Local Qdrant verification
 
 `python -m evaluation.qdrant_smoke --topics data/raw/<inspection-run-id>/topics2022.xml --output-id <fresh-report-id>` verifies stored evidence and compares exact Qdrant results with a direct NumPy reference for every supplied synthetic topic, with and without conservative demographics filtering. Scores must agree within `1e-6`; ordered ID agreement is also reported because boundary ties may differ. This is a bounded correctness check, not an ANN or full-corpus relevance benchmark. Run `evaluation/tests/test_qdrant.py` offline, or set `QDRANT_TEST_URL=http://127.0.0.1:6333` to include its isolated real-server test. That test creates and deletes only a randomly named test collection.
@@ -23,7 +43,7 @@ Milestone 2 implements BM25 over three versioned trial representations:
 
 Each representation is evaluated with and without a conservative deterministic age/sex compatibility filter. The filter removes only explicit contradictions; missing or unparsed values remain candidates. It is a retrieval ablation and does not assess eligibility.
 
-Bounded dense exact and HNSW retrieval are available for operational testing. Full-corpus dense evaluation, hybrid retrieval, reranking, and criterion-aware systems remain future work.
+Bounded dense exact, HNSW, hybrid retrieval, optional reranking, evidence explanations and synthetic research screening are available for operational testing. Full-corpus/held-out ranking evaluation and dependable clinical-language verification remain future work.
 
 ## Metrics
 

@@ -1,5 +1,25 @@
 # Pipelines
 
+## Optional reranking and explanations
+
+`python -m pipelines.rerank demo --no-rerank` inspects invented evidence explanations without loading a model; omit `--no-rerank` to score the candidate prefix. `prepare_reranker` prepares pinned local weights. `rerank prepare-evidence` reconstructs source fields for the existing bounded trial artifact, while `rerank search` uses exact dense plus legacy age/sex filtering and optional reranking. No database collection changes are made. See [preparation, expected behavior and manual tests](../docs/reranking-and-explanations.md).
+
+## Research screening
+
+`python -m pipelines.screening --pair-id demo-match` connects an invented synthetic profile to trial criteria with source evidence, rule outcomes, blockers and missing information. Existing synthetic case/TREC files can be paired with saved original trial parses. `--semantic` adds a separate non-promoted local NLI advisory; it never overrides screening. `pipelines.prepare_nli` prepares the pinned public model in ignored storage. See [the operating guide](../docs/eligibility-verification.md) for supported scope, prerequisites, expected examples and limitations.
+
+## Eligibility text and criterion index
+
+`python -m pipelines.criteria_parse demo` parses a tiny invented trial without models or a database. `prepare --output-id <fresh-id>` reads and verifies original XML for a bounded historical sample, preserving text/order/spans. `pipelines.criteria_index build|load|verify|search` creates and inspects the separate dense/sparse criterion index. Preparation caps the sample at 16 trials and indexing at 512 criteria. Compound or unknown wording stays inspectable; no eligibility assessment is performed. See [operating and manual checks](../docs/eligibility-parsing.md).
+
+## Synthetic patient facts
+
+`python -m pipelines.patient_facts --cases evaluation/data/fixtures/synthetic_patient_facts.json --case-id demo-context` extracts a profile and evidence-backed filter plan without models or Qdrant. `--topics <topics2022.xml> --case-id trec-ct-2022:29` uses a saved synthetic TREC source. Invalid/duplicate records fail with inspectable positions; rejected text is not echoed. `pipelines.hybrid_index search --fact-extractor profile` explicitly connects the profile to existing retrieval without changing the legacy default. See [the fact workflow and manual checks](../docs/patient-facts.md).
+
+## Hybrid index
+
+`python -m pipelines.hybrid_index load` builds dense and sparse named vectors in the separate `trials_hybrid_v1` collection from the verified bounded dense artifact. `verify` checks every vector and evidence payload. Repeated loading is idempotent; mismatched contracts fail before point writes. Install the optional `hybrid` extra for the pinned BM25 tokenizer/scorer and local encoder. See [the hybrid operating guide](../docs/hybrid-retrieval.md) for preparation, three search modes, safe rebuilding, and manual tests. Raw data, models, collections, and generated reports remain local and ignored.
+
 ## Local vector database
 
 `python -m pipelines.qdrant_index load|verify|search` transfers an already verified MiniLM `title_conditions` artifact to local Qdrant. Loading uses stable trial IDs, bounded acknowledged batches, an immutable collection contract, and full evidence/vector read-back. It does not encode or download documents. See [local vector storage](../docs/local-vector-storage.md) for runnable examples and limitations.

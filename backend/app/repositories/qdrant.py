@@ -240,7 +240,7 @@ class QdrantRepository:
         if data.get("status") != "ok" or data.get("result") is not True:
             raise ValueError("snapshot recovery was not acknowledged")
 
-    def ensure_collection(self, contract: dict) -> None:
+    def ensure_collection(self, contract: dict, *, sparse_vectors: dict | None = None) -> None:
         self.version()
         response = self.client.get(self.path)
         if response.status_code == 404:
@@ -251,11 +251,25 @@ class QdrantRepository:
                     "vectors": {VECTOR_NAME: {"size": contract["dimension"], "distance": "Cosine"}},
                     "hnsw_config": {"m": 16, "ef_construct": 100},
                     "metadata": {"retrieval_contract": contract},
+                    **({"sparse_vectors": sparse_vectors} if sparse_vectors is not None else {}),
                 },
             )
         else:
             response.raise_for_status()
         self.check_contract(contract)
+        if sparse_vectors is not None:
+            stored = self.info()["config"]["params"].get("sparse_vectors", {})
+            for name, expected in sparse_vectors.items():
+                actual = stored.get(name)
+                if (
+                    actual is None
+                    or actual.get("modifier") != expected.get("modifier")
+                    or any(
+                        actual.get("index", {}).get(k) != v
+                        for k, v in expected.get("index", {}).items()
+                    )
+                ):
+                    raise ValueError("sparse vector configuration mismatch")
         for key, schema in PAYLOAD_INDEXES.items():
             existing = self.info().get("payload_schema", {}).get(key)
             if existing and existing.get("data_type") != schema:

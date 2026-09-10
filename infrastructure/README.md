@@ -4,11 +4,11 @@ The initial local infrastructure contains one PostgreSQL service and one Qdrant 
 
 ## PostgreSQL
 
-Stores canonical trials, criteria, pipeline state, experiment manifests, and assessments. It becomes active after source inspection and schema design.
+Stores the active immutable catalog, verified synthetic cases and trial source records, and completed API operations with full assessments/provenance. Explicit Alembic migrations own four bounded tables; broader normalized entities remain a future design. Both Compose and the optional native Windows setup bind only to loopback. See [API persistence and startup](../docs/local-research-api.md).
 
 ## Qdrant
 
-Stores rebuildable retrieval indexes and filterable payloads. The implementation loads a verified, bounded MiniLM artifact into `trials_v1`, with an `overview_dense` vector and five payload indexes. Exact/ANN evaluation, explicit graph configuration, snapshots, and isolated recovery/rebuild are available. Sparse vectors remain future work.
+Stores rebuildable retrieval indexes and filterable payloads. The verified MiniLM artifact in `trials_v1` remains intact. `trials_hybrid_v1` adds named dense/sparse vectors and `criteria_v1` holds the bounded criterion diagnostic. Exact/ANN evaluation, explicit graph configuration, snapshots, and isolated recovery/rebuild are available. The API uses the existing hybrid collection even for its default exact dense branch; no new index is required.
 
 See [local vector storage](../docs/local-vector-storage.md) for installation, imports, exact search, verification, and troubleshooting. Docker and native Windows use separate persistent stores; choose one at a time.
 

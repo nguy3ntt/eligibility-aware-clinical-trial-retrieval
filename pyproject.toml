@@ -17,6 +17,20 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+verification = [
+  "numpy>=2.0,<3",
+  "torch>=2.6,<3",
+  "transformers>=5.3,<6",
+  "huggingface-hub>=1,<2",
+  "safetensors>=0.5,<1",
+]
+hybrid = [
+  "bm25s==0.3.11",
+  "numpy>=2.0,<3",
+  "sentence-transformers>=5.3,<6",
+  "huggingface-hub>=1,<2",
+  "safetensors>=0.5,<1",
+]
 dense = [
   "numpy>=2.0,<3",
   "sentence-transformers>=5.3,<6",

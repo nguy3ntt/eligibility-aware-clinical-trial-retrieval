@@ -90,7 +90,9 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 ## Current implementation
 
-The repository includes a minimal health endpoint, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and a bounded dense-retrieval workflow. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. The dense workflow tests pinned models on a small historical sample; full-corpus dense evaluation and eligibility assessment are not yet implemented.
+The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and bounded dense/hybrid retrieval. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. Full-corpus dense evaluation and clinical validation remain deferred.
+
+The [local API guide](docs/local-research-api.md) provides startup and manual tests for 51 curated synthetic cases and 446 public/invented trials. Search, criterion screening, source lookup and saved experiments retain evidence and version identities. Defaults remain exact dense plus legacy age/sex filters; reranking is opt-in and learned screening advisories are never promoted. Results survive restarts in PostgreSQL. The React interface remains future work. See the [integration report](docs/experiments/0010-local-api-and-postgres-integration.md).
 
 The bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, produced field profiles and complete selected-ID traces, and manually inspected ten topic–trial pairs for source consistency. Raw downloads and generated reports remain local and Git-ignored.
 
@@ -101,6 +103,16 @@ The BM25 metrics use the separately downloaded and validated April 27, 2021 corp
 The [dense workflow guide](evaluation/README.md#bounded-dense-retrieval) explains model preparation, sample encoding, offline synthetic-topic search, and real-model checks. Its [reviewed smoke-test report](docs/experiments/0003-bounded-dense-smoke.md) reports operational correctness, resource measurements, and truncation limitations without claiming superiority over BM25.
 
 The [Qdrant diagnostic](docs/experiments/0004-bounded-qdrant-ann-recovery.md) records actual HNSW graph use, exact-versus-ANN neighbor recall and latency, snapshot recovery, and artifact-only rebuilding. Higher effort recovered all exact neighbors on the small pool, but the experiment did not demonstrate a meaningful speed advantage or full-corpus retrieval quality.
+
+The [hybrid workflow](docs/hybrid-retrieval.md) adds versioned BM25 sparse vectors, identical dense/sparse filters, and Reciprocal Rank Fusion with branch scores and evidence. Its [controlled ablation](docs/experiments/0005-bounded-hybrid-ablation.md) improves top-100 recall but reduces average top-10 quality versus dense. Exact dense with age/sex filtering remains the command-line default; hybrid is an explicit research option. No search API, graphical search interface, or eligibility decision is implemented yet.
+
+The [synthetic fact workflow](docs/patient-facts.md) extracts bounded age, sex, condition, medication, treatment, and measurement mentions with exact source spans, negation, uncertainty, history, and experiencer context. It builds auditable age/sex filter plans and exposes unsupported content. [Development evaluation](docs/experiments/0006-synthetic-patient-facts.md) checks authored examples and audits all 50 synthetic topics without claiming general clinical accuracy. Profile-based search is explicitly opt-in; previous retrieval experiments retain their original extractor.
+
+The [eligibility parsing workflow](docs/eligibility-parsing.md) preserves trial-side source wording, sections, clause order and evidence, with bounded deterministic type/numeric rules and explicit review flags. A separate small criterion collection supports dense and sparse similarity inspection. [Development and storage checks](docs/experiments/0007-bounded-eligibility-parsing.md) report exact authored-example results and honest historical coverage limits. This adds no patient eligibility decisions and does not change retrieval defaults.
+
+The [research screening workflow](docs/eligibility-verification.md) connects synthetic facts to complete supported criteria, preserves evidence and reports blockers, unknowns and missing information. An optional local NLI model supplies separately labelled, non-promoted advisories. [Evaluation](docs/experiments/0008-bounded-screening-and-semantic-verification.md) reports successful authored rule checks, limited historical coverage and semantic confidence failures. No confirmed eligibility, automatic semantic screening or retrieval-default change is introduced.
+
+The [reranking and explanation workflow](docs/reranking-and-explanations.md) optionally reorders a bounded exact-dense candidate prefix with a pinned local relevance model. It preserves original rankings, exposes shortened model inputs, and links fixed explanation statements to source fields and validated screening evidence. The [quality/latency experiment](docs/experiments/0009-bounded-reranking-and-explanations.md) compares fixed depths on the existing diagnostic pool. No default promotion, eligibility-score fusion, new API or UI is introduced.
 
 ## Local requirements
 

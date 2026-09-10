@@ -76,8 +76,14 @@ flowchart TD
 - `criterion_dense` and `criterion_sparse` representations;
 - payload for trial ID, section, criterion type, and parser version.
 
-The criteria collection is introduced only after the trial-level system is evaluated.
+The implemented bounded `criteria_v1` diagnostic now stores one point per parsed criterion/group, with full evidence, parent context, source/field hashes, ordinal and parser identity. Some compound clauses intentionally remain unsplit and flagged. The separate collection is capped at 512 points and does not change trial retrieval or perform patient screening. See [ADR 0009](decisions/0009-lossless-bounded-eligibility-parsing.md).
+
+The current diagnostic implements only age/sex payload filtering. Its dense-only collection remains `trials_v1`; the hybrid trial vectors live in the separate `trials_hybrid_v1` collection to preserve the verified dense index and its recovery artifacts. This deliberate bounded implementation is described in [ADR 0007](decisions/0007-versioned-sparse-retrieval-and-rank-fusion.md); the broader fields above remain a plan.
 
 ## Architectural decisions
+
+Bounded cross-encoder reranking preserves candidate membership and original scores; deterministic explanations retain field-level source text and whole-criterion screening context. [ADR 0011](decisions/0011-bounded-reranking-and-evidence-explanations.md) records the fixed quality/latency protocol and why relevance scores never become eligibility probabilities or change defaults through this diagnostic.
+
+Bounded research screening now connects synthetic profiles and parsed criteria through the existing service boundaries, without changing retrieval. Deterministic full-clause checks and optional local NLI advisories remain separate; learned proposals cannot change the screening status. [ADR 0010](decisions/0010-evidence-backed-screening-and-nli-advisories.md) records abstention, source revalidation, calibration and the unmet semantic promotion requirement.
 
 Create a numbered Architecture Decision Record in `decisions/` for choices that materially affect reproducibility, dependencies, scale, or safety. Copy `0000-template.md` and preserve earlier decisions rather than rewriting history.

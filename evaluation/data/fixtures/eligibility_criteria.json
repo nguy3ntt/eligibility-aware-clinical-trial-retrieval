@@ -1,0 +1,51 @@
+{
+ "schema_version":"eligibility-fixtures-v1", "dataset_id":"criteria-development-contract-v1", "invented":true,
+ "annotation_note":"Invented and manually specified development labels, not held-out accuracy. Expected row: exact quote, section, types, logic, numeric tuples [name,operator,value,upper,unit], parent ordinal or null.",
+ "trials":[
+  {"trial_id":"NCT00000001","text":"Inclusion Criteria:\n- Age 18 to 65 years; Hemoglobin >= 10 g/dL.\n- Written informed consent.\nExclusion Criteria:\n- No prior chemotherapy or surgery unless approved.\n- Creatinine > 1.5 mg/dL.","expected":[
+   ["Age 18 to 65 years","inclusion",["age"],"unspecified",[["age","range",18,65,"year"]],null],
+   ["Hemoglobin >= 10 g/dL.","inclusion",["measurement"],"unspecified",[["hemoglobin","ge",10,null,"g/dL"]],null],
+   ["Written informed consent.","inclusion",["consent"],"unspecified",[],null],
+   ["No prior chemotherapy or surgery unless approved.","exclusion",["treatment"],"or",[],null],
+   ["Creatinine > 1.5 mg/dL.","exclusion",["measurement"],"unspecified",[["creatinine","gt",1.5,null,"mg/dL"]],null]
+  ]},
+  {"trial_id":"NCT00000002","text":"Inclusion Criteria\n- Adequate laboratory function:\n  - Hemoglobin at least 9 g/dL.\n  - Platelets >= 100 x10^9/L.\n- Male or female.\nExclusion Criteria\n- Active infection and diabetes.","expected":[
+   ["Adequate laboratory function:","inclusion",["measurement"],"unspecified",[],null],
+   ["Hemoglobin at least 9 g/dL.","inclusion",["measurement"],"unspecified",[["hemoglobin","ge",9,null,"g/dL"]],1],
+   ["Platelets >= 100 x10^9/L.","inclusion",["measurement"],"unspecified",[["platelets","ge",100,null,"x10^9/L"]],1],
+   ["Male or female.","inclusion",["sex"],"or",[],null],
+   ["Active infection and diabetes.","exclusion",["condition"],"and",[],null]
+  ]},
+  {"trial_id":"NCT00000003","text":"Public invented note.\n\nAge > 18 years.\n\nNo asthma.","expected":[
+   ["Public invented note.","unknown",["other"],"unspecified",[],null],
+   ["Age > 18 years.","unknown",["age"],"unspecified",[["age","gt",18,null,"year"]],null],
+   ["No asthma.","unknown",["condition"],"unspecified",[],null]
+  ]},
+  {"trial_id":"NCT00000004","text":"Inclusion Criteria: Age >= 18 years. Exclusion Criteria: Creatinine < 1.2 mg/dL.","expected":[
+   ["Age >= 18 years.","inclusion",["age"],"unspecified",[["age","ge",18,null,"year"]],null],
+   ["Creatinine < 1.2 mg/dL.","exclusion",["measurement"],"unspecified",[["creatinine","lt",1.2,null,"mg/dL"]],null]
+  ]},
+  {"trial_id":"NCT00000005","text":"Inclusion Criteria:\n1. Age between 18 and 65 years.\n2. BMI <= 30 kg/m².\nExclusion Criteria:\n(a) HbA1c > 8 %.\n(b) Creatinine > 2 widgets.","expected":[
+   ["Age between 18 and 65 years.","inclusion",["age"],"and",[["age","range",18,65,"year"]],null],
+   ["BMI <= 30 kg/m².","inclusion",["measurement"],"unspecified",[["bmi","le",30,null,"kg/m2"]],null],
+   ["HbA1c > 8 %.","exclusion",["measurement"],"unspecified",[["hba1c","gt",8,null,"%"]],null],
+   ["Creatinine > 2 widgets.","exclusion",["measurement"],"unspecified",[],null]
+  ]},
+  {"trial_id":"NCT00000006","text":"Inclusion Criteria:\n- Disease A or disease B and written consent.\n- Age >= 18 years; <= 65 years.\n- Prior surgery (unless minor; permitted procedures listed separately).","expected":[
+   ["Disease A or disease B and written consent.","inclusion",["condition","consent"],"mixed",[],null],
+   ["Age >= 18 years; <= 65 years.","inclusion",["age"],"unspecified",[["age","ge",18,null,"year"]],null],
+   ["Prior surgery (unless minor; permitted procedures listed separately).","inclusion",["treatment"],"unspecified",[],null]
+  ]},
+  {"trial_id":"NCT00000007","text":"Inclusion Criteria:\r\n- Written consent and ability\r\n  to return for follow-up.\r\nExclusion Criteria:\r\n• No insulin use.","expected":[
+   ["Written consent and ability\r\n  to return for follow-up.","inclusion",["consent"],"and",[],null],
+   ["No insulin use.","exclusion",["medication"],"unspecified",[],null]
+  ]},
+  {"trial_id":"NCT00000008","text":"Inclusion Criteria:\n- Age 65 to 18 years.\nExclusion Criteria:\n- No prior surgery.\nInclusion Criteria:\n- Written consent.","expected":[
+   ["Age 65 to 18 years.","inclusion",["age"],"unspecified",[],null],
+   ["No prior surgery.","exclusion",["treatment"],"unspecified",[],null],
+   ["Written consent.","inclusion",["consent"],"unspecified",[],null]
+  ]},
+  {"trial_id":"NCT00000009","text":"","expected":[]},
+  {"trial_id":"NCT00000010","text":"Inclusion Criteria:\nExclusion Criteria:\n   ","expected":[]}
+ ]
+}

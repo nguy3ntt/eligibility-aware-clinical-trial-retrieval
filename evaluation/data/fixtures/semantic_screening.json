@@ -1,0 +1,439 @@
+{
+  "schema_version": "synthetic-nli-pairs-v1",
+  "synthetic": true,
+  "dataset_id": "screening-nli-calibration-test-v1",
+  "pairs": [
+    {
+      "id": "calibration-01",
+      "split": "calibration",
+      "patient": "The patient has asthma.",
+      "criterion": "The patient has asthma.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-02",
+      "split": "calibration",
+      "patient": "The patient denies asthma.",
+      "criterion": "The patient has asthma.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-03",
+      "split": "calibration",
+      "patient": "The patient has diabetes.",
+      "criterion": "The patient has asthma.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-04",
+      "split": "calibration",
+      "patient": "The patient takes metformin.",
+      "criterion": "The patient takes a medication.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-05",
+      "split": "calibration",
+      "patient": "The patient takes no medications.",
+      "criterion": "The patient takes metformin.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-06",
+      "split": "calibration",
+      "patient": "The patient is 40 years old.",
+      "criterion": "The patient takes metformin.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-07",
+      "split": "calibration",
+      "patient": "The patient currently receives chemotherapy.",
+      "criterion": "The patient receives chemotherapy.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-08",
+      "split": "calibration",
+      "patient": "The patient is not receiving chemotherapy.",
+      "criterion": "The patient receives chemotherapy.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-09",
+      "split": "calibration",
+      "patient": "The patient's mother receives chemotherapy.",
+      "criterion": "The patient receives chemotherapy.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-10",
+      "split": "calibration",
+      "patient": "The patient is a woman.",
+      "criterion": "The patient is female.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-11",
+      "split": "calibration",
+      "patient": "The patient is male.",
+      "criterion": "The patient is female.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-12",
+      "split": "calibration",
+      "patient": "The patient has a cough.",
+      "criterion": "The patient is female.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-13",
+      "split": "calibration",
+      "patient": "The patient had surgery last year.",
+      "criterion": "The patient has had surgery.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-14",
+      "split": "calibration",
+      "patient": "The patient has never had surgery.",
+      "criterion": "The patient has had surgery.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-15",
+      "split": "calibration",
+      "patient": "Surgery is planned for next month.",
+      "criterion": "The patient has had surgery.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-16",
+      "split": "calibration",
+      "patient": "The patient has kidney disease.",
+      "criterion": "The patient has a disease.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-17",
+      "split": "calibration",
+      "patient": "The patient has no kidney disease.",
+      "criterion": "The patient has kidney disease.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-18",
+      "split": "calibration",
+      "patient": "Kidney disease is suspected but not confirmed.",
+      "criterion": "The patient has kidney disease.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-19",
+      "split": "calibration",
+      "patient": "The patient is 20 years old.",
+      "criterion": "The patient is older than 18 years.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-20",
+      "split": "calibration",
+      "patient": "The patient is 15 years old.",
+      "criterion": "The patient is older than 18 years.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-21",
+      "split": "calibration",
+      "patient": "The patient is an adult.",
+      "criterion": "The patient is 50 years old.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-22",
+      "split": "calibration",
+      "patient": "The patient has hemoglobin of 12 g/dL.",
+      "criterion": "The patient's hemoglobin exceeds 10 g/dL.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "calibration-23",
+      "split": "calibration",
+      "patient": "The patient has hemoglobin of 8 g/dL.",
+      "criterion": "The patient's hemoglobin exceeds 10 g/dL.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "calibration-24",
+      "split": "calibration",
+      "patient": "A hemoglobin test was ordered.",
+      "criterion": "The patient's hemoglobin exceeds 10 g/dL.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-01",
+      "split": "test",
+      "patient": "The patient has hypertension.",
+      "criterion": "The patient has high blood pressure.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-02",
+      "split": "test",
+      "patient": "The patient does not have hypertension.",
+      "criterion": "The patient has hypertension.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-03",
+      "split": "test",
+      "patient": "The patient's father has hypertension.",
+      "criterion": "The patient has hypertension.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-04",
+      "split": "test",
+      "patient": "The patient currently takes warfarin.",
+      "criterion": "The patient takes warfarin.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-05",
+      "split": "test",
+      "patient": "The patient is not taking warfarin.",
+      "criterion": "The patient takes warfarin.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-06",
+      "split": "test",
+      "patient": "The patient might start warfarin tomorrow.",
+      "criterion": "The patient takes warfarin.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-07",
+      "split": "test",
+      "patient": "The patient currently undergoes dialysis.",
+      "criterion": "The patient receives dialysis.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-08",
+      "split": "test",
+      "patient": "The patient has never undergone dialysis.",
+      "criterion": "The patient receives dialysis.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-09",
+      "split": "test",
+      "patient": "The patient has chronic kidney disease.",
+      "criterion": "The patient receives dialysis.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-10",
+      "split": "test",
+      "patient": "The patient suffered a heart attack.",
+      "criterion": "The patient has had a myocardial infarction.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-11",
+      "split": "test",
+      "patient": "The patient has never suffered a heart attack.",
+      "criterion": "The patient has had a myocardial infarction.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-12",
+      "split": "test",
+      "patient": "The patient has chest pain of unknown cause.",
+      "criterion": "The patient has had a myocardial infarction.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-13",
+      "split": "test",
+      "patient": "The patient is 65 years old.",
+      "criterion": "The patient is at least 65 years old.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-14",
+      "split": "test",
+      "patient": "The patient is 64 years old.",
+      "criterion": "The patient is at least 65 years old.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-15",
+      "split": "test",
+      "patient": "The patient is older than 50 years.",
+      "criterion": "The patient is at least 65 years old.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-16",
+      "split": "test",
+      "patient": "The patient has creatinine of 2 mg/dL.",
+      "criterion": "The patient's creatinine is above 1.5 mg/dL.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-17",
+      "split": "test",
+      "patient": "The patient has creatinine of 1 mg/dL.",
+      "criterion": "The patient's creatinine is above 1.5 mg/dL.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-18",
+      "split": "test",
+      "patient": "The patient has kidney disease but no laboratory results are available.",
+      "criterion": "The patient's creatinine is above 1.5 mg/dL.",
+      "label": "neutral",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-19",
+      "split": "test",
+      "patient": "The patient currently has pneumonia.",
+      "criterion": "The patient has pneumonia.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-20",
+      "split": "test",
+      "patient": "Pneumonia was ruled out in the patient.",
+      "criterion": "The patient has pneumonia.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-21",
+      "split": "test",
+      "patient": "The patient may have pneumonia.",
+      "criterion": "The patient has pneumonia.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-22",
+      "split": "test",
+      "patient": "The patient had radiotherapy last year.",
+      "criterion": "The patient has received radiation therapy.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-23",
+      "split": "test",
+      "patient": "The patient has never received radiation therapy.",
+      "criterion": "The patient has received radiation therapy.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-24",
+      "split": "test",
+      "patient": "Radiotherapy is scheduled but has not started.",
+      "criterion": "The patient has received radiation therapy.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-25",
+      "split": "test",
+      "patient": "The patient currently has rheumatoid arthritis.",
+      "criterion": "The patient has rheumatoid arthritis.",
+      "label": "entailment",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-26",
+      "split": "test",
+      "patient": "The patient does not have rheumatoid arthritis.",
+      "criterion": "The patient has rheumatoid arthritis.",
+      "label": "contradiction",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-27",
+      "split": "test",
+      "patient": "The patient's sister has rheumatoid arthritis.",
+      "criterion": "The patient has rheumatoid arthritis.",
+      "label": "neutral",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-28",
+      "split": "test",
+      "patient": "The patient reports no drug allergies.",
+      "criterion": "The patient has no drug allergies.",
+      "label": "entailment",
+      "section": "exclusion"
+    },
+    {
+      "id": "test-29",
+      "split": "test",
+      "patient": "The patient is allergic to penicillin.",
+      "criterion": "The patient has no drug allergies.",
+      "label": "contradiction",
+      "section": "inclusion"
+    },
+    {
+      "id": "test-30",
+      "split": "test",
+      "patient": "The patient's allergy history is unavailable.",
+      "criterion": "The patient has no drug allergies.",
+      "label": "neutral",
+      "section": "exclusion"
+    }
+  ]
+}

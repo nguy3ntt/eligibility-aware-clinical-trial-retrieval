@@ -1,5 +1,9 @@
 # Data model
 
+## Reranked evidence results
+
+The optional `reranked-evidence-results-v1` CLI packet preserves candidate identity, original/final rank and dense score separately from the learned relevance logit. The reranker records pinned model/template identity, query and document hashes, full/used token counts and retained character spans. Summary spans refer to normalized renderer text; a separate verified evidence artifact retains original XML field text lists, locators, XML hash and archive/member provenance. Explanations include the validated full research-screening packet, criterion outcomes, patient fact references, blockers and unknowns. No new canonical database, eligibility probability or criterion-vector index is introduced. See [the contract and usage guide](reranking-and-explanations.md).
+
 This document defines conceptual entities. Concrete SQLAlchemy models and migrations are introduced only after source inspection.
 
 | Entity | Purpose | Important fields |
@@ -33,6 +37,12 @@ Canonical source content receives a deterministic hash. Unchanged records should
 ## Unknown and missing values
 
 Missing values must remain distinct from negative values. For example, an absent maximum age is not the same as a maximum age of zero, and an unmentioned medication is not evidence that the patient is not taking it.
+
+The implemented `synthetic-profile-v1` contract preserves source and narrative hashes, exact mention/context character spans, rule version/fingerprint, assertion, certainty, temporality, and experiencer. It retains all supported mentions instead of merging them into a confirmed clinical state. Unrecognized categories and extraction issues remain explicit, and the profile is labelled non-exhaustive. Only reliable current patient age/sex facts can create a filter plan. See [ADR 0008](architecture/decisions/0008-evidence-backed-synthetic-patient-facts.md); SQL persistence remains deferred.
+
+The implemented `parsed-eligibility-v1` contract adds exact decoded trial text, raw XML/archive provenance, contiguous section coverage, ordered criterion spans, stable parser/source-derived IDs, parent links, bounded type/quantity rules and review reasons. The separate criterion vector artifact embeds section + ancestors + verbatim wording and records token truncation without discarding evidence. It does not create a `criterion_assessments` record or resolve medical eligibility. See [ADR 0009](architecture/decisions/0009-lossless-bounded-eligibility-parsing.md).
+
+`research-screening-v1` embeds the validated profile and parsed trial, evidence-backed criterion outcomes, rule/source identities, blocker/unknown IDs and missing information. Stored assessments can be reproduced before reuse. Rules have no invented confidence probability. Optional learned NLI advisories are separate, non-promoted text-relation outputs and never alter the screening packet. These are local JSON contracts; SQL persistence, HTTP routes and confirmed clinical eligibility remain absent. See [ADR 0010](architecture/decisions/0010-evidence-backed-screening-and-nli-advisories.md).
 
 ## Observed canonical trial proposal
 

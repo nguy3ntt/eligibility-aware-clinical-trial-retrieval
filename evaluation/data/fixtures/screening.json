@@ -1,0 +1,319 @@
+{
+  "schema_version": "screening-fixtures-v1",
+  "synthetic": true,
+  "dataset_id": "invented-screening-contracts-v1",
+  "pairs": [
+    {
+      "id": "demo-match",
+      "patient": "40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 to 65 years.\n- Male.\n- Hemoglobin >= 10 g/dL.\nExclusion Criteria:\n- Creatinine > 1.5 mg/dL.",
+      "expected": [
+        "satisfied",
+        "satisfied",
+        "satisfied",
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "demo-exclusion",
+      "patient": "17-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "demo-supported",
+      "patient": "40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 to 65 years.\n- Male.\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "satisfied",
+        "satisfied",
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "age-upper",
+      "patient": "65-year-old woman.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 to 65 years.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "age-over",
+      "patient": "66-year-old woman.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 to 65 years.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "age-exclusive",
+      "patient": "18-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age > 18 years.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "age-exclusion",
+      "patient": "17-year-old man.",
+      "eligibility": "Exclusion Criteria:\n- Age < 18 years.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "age-clear-exclusion",
+      "patient": "18-year-old man.",
+      "eligibility": "Exclusion Criteria:\n- Age < 18 years.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "sex-exclusion",
+      "patient": "40-year-old woman.",
+      "eligibility": "Exclusion Criteria:\n- Female.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "sex-inclusion",
+      "patient": "40-year-old woman.",
+      "eligibility": "Inclusion Criteria:\n- Male.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "lab-boundary",
+      "patient": "40-year-old man. Hemoglobin 10 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "lab-low",
+      "patient": "40-year-old man. Hemoglobin 9 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "lab-exclusion",
+      "patient": "40-year-old man. Creatinine 2 mg/dL.",
+      "eligibility": "Exclusion Criteria:\n- Creatinine > 1.5 mg/dL.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "lab-exclusion-clear",
+      "patient": "40-year-old man. Creatinine 1.5 mg/dL.",
+      "eligibility": "Exclusion Criteria:\n- Creatinine > 1.5 mg/dL.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "unit-mismatch",
+      "patient": "40-year-old man. Hemoglobin 120 g/L.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "age-unit-mismatch",
+      "patient": "24-month-old boy.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 2 years.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "missing-age",
+      "patient": "The patient has asthma.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "uncertain-age",
+      "patient": "Approximately 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "family-lab",
+      "patient": "40-year-old man. His mother has hemoglobin 9 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "historical-lab",
+      "patient": "40-year-old man. Previously hemoglobin 9 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "conflicting-lab",
+      "patient": "40-year-old man. Hemoglobin 9 g/dL. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "interval-lab",
+      "patient": "40-year-old man. Hemoglobin > 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "demo-not-applicable",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "not_applicable"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "gate-applicable",
+      "patient": "40-year-old woman. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "gate-missing-sex",
+      "patient": "The patient has hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "unsupported-suffix",
+      "patient": "40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL on two visits.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "shared-exception",
+      "patient": "17-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.\n- Exceptions may be approved.",
+      "expected": [
+        "unknown",
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "nested-context",
+      "patient": "40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Laboratory requirements:\n  - Hemoglobin >= 10 g/dL.",
+      "expected": [
+        "unknown",
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "unknown-preamble",
+      "patient": "17-year-old man.",
+      "eligibility": "Only one requirement is necessary.\nInclusion Criteria:\n- Age >= 18 years.",
+      "expected": [
+        "unknown",
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "empty-trial",
+      "patient": "40-year-old man.",
+      "eligibility": "",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "demo-semantic",
+      "patient": "The patient has asthma.",
+      "eligibility": "Inclusion Criteria:\n- The patient has asthma.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "semantic-absence",
+      "patient": "The patient denies asthma.",
+      "eligibility": "Exclusion Criteria:\n- The patient has asthma.",
+      "expected": [
+        "unknown"
+      ],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "numeric-equality",
+      "patient": "40-year-old man. HbA1c 7 %.",
+      "eligibility": "Inclusion Criteria:\n- HbA1c = 7 %.",
+      "expected": [
+        "satisfied"
+      ],
+      "status": "potential_match"
+    },
+    {
+      "id": "numeric-upper",
+      "patient": "40-year-old man. BMI 31 kg/m2.",
+      "eligibility": "Inclusion Criteria:\n- BMI <= 30 kg/m2.",
+      "expected": [
+        "violated"
+      ],
+      "status": "likely_exclusion"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from backend.app.main import app
 
-client = TestClient(app)
+client = TestClient(app, base_url="http://localhost")
 
 
 def test_health_endpoint() -> None:
@@ -18,5 +18,5 @@ def test_root_discloses_research_status() -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert response.json()["status"] == "foundation scaffold"
+    assert response.json()["status"] == "bounded research API"
     assert "not medical advice" in response.json()["safety"].lower()
