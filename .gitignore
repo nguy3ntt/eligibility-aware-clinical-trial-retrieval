@@ -73,6 +73,10 @@ qdrant_storage/
 # Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/coverage/
+*.tsbuildinfo
 
 # Logs and reports
 *.log

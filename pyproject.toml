@@ -62,7 +62,8 @@ dev = [
 include = ["backend*", "pipelines*", "evaluation*"]
 
 [tool.pytest.ini_options]
-addopts = "-q"
+# Short tracebacks avoid third-party connection-frame argument dumps on outages.
+addopts = "-q --tb=short"
 testpaths = ["backend/tests", "pipelines/tests", "evaluation/tests"]
 
 [tool.ruff]

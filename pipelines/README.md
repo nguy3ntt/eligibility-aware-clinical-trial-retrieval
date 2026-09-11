@@ -1,5 +1,9 @@
 # Pipelines
 
+## API catalog preparation
+
+`python -m pipelines.api_data migrate` applies explicit PostgreSQL migrations. `seed` validates existing synthetic topics, retrieval artifacts and source evidence, then transactionally imports the immutable 51-case/446-trial catalog. `status` checks the database revision/catalog without printing credentials. Identical imports are repeatable; conflicting evidence requires a new version, not an overwrite. `import-experiment --report-id <completed-report-id>` preserves a historical local report manifest and its checksum without rerunning it. See [the API guide](../docs/local-research-api.md) for setup, prerequisites and manual requests.
+
 ## Optional reranking and explanations
 
 `python -m pipelines.rerank demo --no-rerank` inspects invented evidence explanations without loading a model; omit `--no-rerank` to score the candidate prefix. `prepare_reranker` prepares pinned local weights. `rerank prepare-evidence` reconstructs source fields for the existing bounded trial artifact, while `rerank search` uses exact dense plus legacy age/sex filtering and optional reranking. No database collection changes are made. See [preparation, expected behavior and manual tests](../docs/reranking-and-explanations.md).

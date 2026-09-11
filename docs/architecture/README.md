@@ -82,6 +82,10 @@ The current diagnostic implements only age/sex payload filtering. Its dense-only
 
 ## Architectural decisions
 
+The local React workspace reuses the API through a fixed loopback proxy, validates displayed evidence and discards stale responses across selection changes. [ADR 0013](decisions/0013-local-react-workspace-and-staged-evidence-views.md) records the search/fact/source views, separation from remaining screening/laboratory/experiment screens, and the no-new-inference boundary.
+
+The bounded `/v1` API now composes the established retrieval, fact extraction, parsing, screening and explanation services. PostgreSQL stores immutable source catalogs and complete operations; Qdrant remains the rebuildable vector boundary. [ADR 0012](decisions/0012-local-research-api-and-immutable-postgres-evidence.md) records explicit migrations/imports, replay identities, structured failures, local-only constraints and isolated real-database tests. React and broader normalized persistence remain future work.
+
 Bounded cross-encoder reranking preserves candidate membership and original scores; deterministic explanations retain field-level source text and whole-criterion screening context. [ADR 0011](decisions/0011-bounded-reranking-and-evidence-explanations.md) records the fixed quality/latency protocol and why relevance scores never become eligibility probabilities or change defaults through this diagnostic.
 
 Bounded research screening now connects synthetic profiles and parsed criteria through the existing service boundaries, without changing retrieval. Deterministic full-clause checks and optional local NLI advisories remain separate; learned proposals cannot change the screening status. [ADR 0010](decisions/0010-evidence-backed-screening-and-nli-advisories.md) records abstention, source revalidation, calibration and the unmet semantic promotion requirement.

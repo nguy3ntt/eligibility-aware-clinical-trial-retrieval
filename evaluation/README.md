@@ -1,5 +1,9 @@
 # Evaluation
 
+## API integration verification
+
+`python -m evaluation.api_smoke --output-id <fresh-id>` runs 24 checks against the local HTTP API, including source lookup, three retrieval methods, optional models, persisted operations, screening outcomes and structured rejection. Reports stay under ignored `evaluation/reports/`. PostgreSQL/Qdrant integration tests also compare API dense ranks/scores against an independent exact calculation and exercise migrations, immutable imports and restart persistence. See [setup and manual checks](../docs/local-research-api.md) and [the integration report](../docs/experiments/0010-local-api-and-postgres-integration.md). These are engineering checks; they do not establish clinical validation or ranking improvement.
+
 ## Reranking quality and latency
 
 `python -m evaluation.reranking --output-id <fresh-id>` compares BM25, exact dense and fixed reranked prefixes of 10/20 over the same filtered 443-trial diagnostic and all 50 synthetic topics. It retains complete candidate rankings, pooled qrels, per-topic gains/losses, exact repeated model scores, truncation evidence, top-result explanations and separate warm CPU timings. It does not tune depths or promote defaults using this judgment-selected pool. See [reviewed results](../docs/experiments/0009-bounded-reranking-and-explanations.md) and [manual checks](../docs/reranking-and-explanations.md).
@@ -106,4 +110,4 @@ python -m evaluation.dense_smoke --index-id dense-pubmedbert-v2 --topics data/ra
 
 Expected output: `status=passed`, three synthetic query checks, and eight self-retrieval checks. The verifier repeats encodings and rankings, compares blockwise results with a direct full-matrix reference, and re-encodes saved documents to check document/query consistency. Detailed output stays under ignored `evaluation/reports/`.
 
-`python -m pytest evaluation/tests/test_dense_retrieval.py` runs offline tests with invented fixtures and no model download. Install the `dense` extra to run every dense test; unavailable optional dependencies cause the relevant tests to be skipped. The API still exposes only foundation endpoints; dense searching currently uses the command line.
+`python -m pytest evaluation/tests/test_dense_retrieval.py` runs offline tests with invented fixtures and no model download. Install the `dense` extra to run every dense test; unavailable optional dependencies cause the relevant tests to be skipped. The original workflow remains available through the command line; the bounded API now composes the later verified Qdrant retrieval services.

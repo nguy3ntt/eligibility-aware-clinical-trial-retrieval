@@ -90,7 +90,7 @@ Test default search:
 ```powershell
 $body = @{case_id='trec-ct-2022:29'} | ConvertTo-Json
 $search = Invoke-RestMethod "$base/v1/search" -Method Post -ContentType 'application/json' -Body $body
-$search.result.results | Select-Object trial_id, eligibility_assessment
+$search.result.results | Select-Object trial_id, @{Name='screening_status'; Expression={$_.screening.status}}
 $search.result.method
 $search.result.fact_extractor
 ```

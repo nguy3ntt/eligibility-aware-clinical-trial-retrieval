@@ -22,6 +22,12 @@ This document defines conceptual entities. Concrete SQLAlchemy models and migrat
 | `criterion_assessments` | Patient–criterion output | assessment, confidence, fact evidence, model version |
 | `relevance_judgments` | Benchmark ground truth | case, trial, graded label, source |
 
+## Implemented local persistence
+
+The bounded API implements four PostgreSQL tables through explicit Alembic migrations: `ctr_catalogs`, `ctr_cases`, `ctr_trials` and `ctr_operations`. Catalog/source identities and payload SHA-256 values are relational columns; validated JSONB retains complete versioned evidence, profiles, criterion assessments, explanations and operation provenance. Catalog-scoped foreign keys preserve source ownership. Completed operations are immutable and transactional; repeat requests can replay a saved result under the same request/source/code/runtime identity.
+
+This is a deliberate bounded implementation, not completion of every proposed normalized entity above. Earlier references below to deferred SQL describe the stage when those contracts were introduced. See [ADR 0012](architecture/decisions/0012-local-research-api-and-immutable-postgres-evidence.md) and [the API guide](local-research-api.md). The canonical ClinicalTrials.gov normalization proposal remains separate from the historical catalog imported here.
+
 ## Identity rules
 
 - Preserve the ClinicalTrials.gov NCT ID.
