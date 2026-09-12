@@ -874,3 +874,230 @@ dialog::backdrop {
     animation: none;
   }
 }
+
+/* Evidence workbench views share the original palette and responsive shell. */
+.workbench-form {
+  display: grid;
+  gap: 18px;
+  margin: 22px 0;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal);
+  flex-shrink: 0;
+}
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.stat-grid > div {
+  display: flex;
+  flex-direction: column;
+  background: #edf2e7;
+  border: 1px solid #d6e2cd;
+  border-radius: 8px;
+  padding: 16px;
+}
+.stat-grid strong {
+  font-size: 1.4rem;
+  font-weight: 550;
+}
+.stat-grid span {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.badge.unknown {
+  background: #f8edcd;
+  color: #735712;
+}
+.badge.violated {
+  background: #f6e5df;
+  color: #8a4333;
+}
+.badge.satisfied,
+.badge.not_applicable {
+  background: #e0eee8;
+  color: #285b49;
+}
+.cited-fact {
+  padding: 15px;
+  background: #fffefa;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 12px 0;
+}
+.cited-fact .tags {
+  margin-top: 8px;
+}
+.learned-advisory {
+  border: 1px dashed #8a85a9;
+  border-left: 4px solid #8a85a9;
+  background: #f1eef7;
+  padding: 17px;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+.learned-advisory strong {
+  font-size: 0.82rem;
+}
+.probabilities {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+.lab-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.lab-options legend {
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 0 8px;
+}
+.table-scroll {
+  overflow: auto;
+  margin: 20px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8rem;
+}
+caption {
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding-bottom: 12px;
+}
+th,
+td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+}
+thead {
+  background: #edf2e7;
+}
+.comparison {
+  margin-top: 30px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+.comparison > details {
+  margin: 20px 0;
+}
+.operation-lookup {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin: 25px 0;
+}
+.operation-lookup label {
+  flex: 1;
+  min-width: 0;
+}
+.operation-lookup input {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #bcccbc;
+  border-radius: 5px;
+  margin-top: 8px;
+  font: inherit;
+}
+.operation-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.operation-list button {
+  width: 100%;
+  text-align: left;
+  padding: 14px;
+}
+.operation-list button[aria-pressed="true"] {
+  background: #e4eddb;
+  border-color: #6d8760;
+}
+.operation-list span {
+  display: block;
+  text-transform: capitalize;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+.operation-list code {
+  font-size: 0.66rem;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+}
+.selected-operation {
+  border-top: 2px solid var(--border);
+  margin-top: 30px;
+  padding-top: 25px;
+}
+.screen-pair {
+  margin-left: 20px;
+}
+@media (max-width: 1100px) {
+  .lab-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 780px) {
+  .sidebar {
+    flex-wrap: wrap;
+  }
+  .sidebar nav {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    margin-left: 0;
+  }
+  .lab-options {
+    grid-template-columns: 1fr;
+  }
+  .operation-list {
+    grid-template-columns: 1fr;
+  }
+  .operation-lookup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stat-grid {
+    gap: 6px;
+  }
+  .stat-grid > div {
+    padding: 10px;
+  }
+  .stat-grid strong {
+    font-size: 1rem;
+  }
+  .stat-grid span {
+    font-size: 0.65rem;
+  }
+  .screen-pair {
+    margin-left: 0;
+    display: block;
+  }
+}

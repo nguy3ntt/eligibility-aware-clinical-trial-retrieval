@@ -1,0 +1,9 @@
+-c observed-python312.txt
+-e .[dev]
+numpy==2.5.2
+bm25s==0.3.11
+scipy==1.18.1
+threadpoolctl==3.6.0
+SQLAlchemy==2.0.52
+alembic==1.19.2
+psycopg[binary]==3.3.5

@@ -9,7 +9,8 @@ if (Test-Path -LiteralPath $pidPath) {
     $apiProcessId = [int](Get-Content -LiteralPath $pidPath -Raw)
     $owned = Get-CimInstance Win32_Process -Filter "ProcessId = $apiProcessId"
     if ($owned -and ($owned.ExecutablePath -ne $python -or $owned.CommandLine -notlike '*uvicorn backend.app.main:app*')) {
-        throw 'Recorded PID no longer belongs to this API; no process was changed.'
+        if ($Action -eq 'Start') { $owned = $null }
+        else { throw 'Recorded PID no longer belongs to this API; no process was changed.' }
     }
 }
 if ($Action -eq 'Status') {

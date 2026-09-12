@@ -31,21 +31,29 @@ A search system can retrieve a trial because its condition resembles the patient
 
 The system therefore separates **relevance retrieval** from **eligibility assessment**. Similarity is used to find candidates; it is not treated as proof of eligibility.
 
-## Planned capabilities
+## Implemented research capabilities
 
 | Capability | Purpose |
 |---|---|
 | BM25 retrieval | Strong exact-term and lexical baseline |
-| Dense retrieval | Conceptual matching with biomedical embeddings |
-| Qdrant HNSW search | Approximate nearest-neighbour retrieval at practical scale |
+| Dense retrieval | Exact MiniLM matching; separate biomedical-model diagnostic |
+| Qdrant HNSW search | Approximate retrieval checked against exact neighbors on the bounded diagnostic |
 | Hybrid retrieval | Fuse lexical and semantic rankings |
 | Metadata filtering | Apply age, sex, status, phase, country, and other structured constraints |
-| Reranking | Improve precision over the initial candidate set |
+| Reranking | Measure optional cross-encoder reordering, including negative results |
 | Patient fact extraction | Structure age, conditions, medications, treatments, and measurements |
 | Eligibility parsing | Split inclusion and exclusion text into atomic criteria |
 | Criterion verification | Label individual criteria as satisfied, violated, unknown, or not applicable |
 | Evidence explanations | Link every assessment to exact source text and patient facts |
 | Retrieval laboratory | Compare methods, ablations, latency, and ANN recall |
+
+The [full-corpus experiment](docs/experiments/0011-full-corpus-release-and-hardening.md)
+evaluates 375,580 frozen trials against all 50 synthetic TREC 2022 cases. With age/sex
+filtering, matched title/condition BM25 scores 0.2156 nDCG@10, dense 0.3471, hybrid 0.3487
+and hybrid plus rerank-20 0.3689. The hybrid/reranking intervals include zero, the topics
+are not held out, and all 150 displayed screening pairs remain insufficient information.
+The [release guide](docs/research-release.md) covers reproducibility, incremental registry
+updates, index migration/recovery, CI and a repeatable portfolio recording.
 
 ## Data sources
 
@@ -79,7 +87,7 @@ flowchart TD
 | `backend/` | FastAPI application, persistence interfaces, retrieval orchestration, and screening services |
 | `pipelines/` | Source connectors, normalization, criterion parsing, embedding, and indexing |
 | `evaluation/` | BM25/dense baselines, TREC evaluation, ablations, significance tests, and reports |
-| `frontend/` | Local React/TypeScript search, fact review and trial-source interface |
+| `frontend/` | Local React/TypeScript search, evidence review, retrieval comparisons and saved experiments |
 | `infrastructure/` | Docker Compose, container configuration, and later monitoring |
 | `data/` | Local-only raw/interim/processed data boundaries; large data are Git-ignored |
 | `notebooks/` | Exploration only; production logic must live in Python modules |
@@ -90,11 +98,11 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 ## Current implementation
 
-The [browser research workspace](docs/research-workspace.md) supports curated synthetic-case selection, read-only fact review, default retrieval and trial/criterion source inspection. Open it locally on port 5173 after starting the services. Dedicated screening evidence, retrieval laboratory and experiment-dashboard views remain subsequent work. It preserves API evidence and defaults without introducing real-patient input or clinical decisions.
+The [browser research workspace](docs/research-workspace.md) supports curated synthetic-case selection, read-only fact review, retrieval and trial/criterion source inspection. Its eligibility evidence panel connects every criterion outcome to exact synthetic facts and missing information; optional NLI advice remains visibly separate. A retrieval laboratory compares explicit configurations against the unchanged dense baseline, and an experiment dashboard reopens persisted operations and historical reports. Open it locally on port 5173 after starting the services. No real-patient input or clinical decisions are introduced.
 
 The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and bounded dense/hybrid retrieval. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. Full-corpus dense evaluation and clinical validation remain deferred.
 
-The [local API guide](docs/local-research-api.md) provides startup and manual tests for 51 curated synthetic cases and 446 public/invented trials. Search, criterion screening, source lookup and saved experiments retain evidence and version identities. Defaults remain exact dense plus legacy age/sex filters; reranking is opt-in and learned screening advisories are never promoted. Results survive restarts in PostgreSQL. The initial React search/fact/source views are now available; dedicated screening, laboratory and experiment views remain future work. See the [integration report](docs/experiments/0010-local-api-and-postgres-integration.md).
+The [local API guide](docs/local-research-api.md) provides startup and manual tests for 51 curated synthetic cases and 446 public/invented trials. Search, criterion screening, source lookup and saved experiments retain evidence and version identities. Defaults remain exact dense plus legacy age/sex filters; reranking is opt-in and learned screening advisories are never promoted. Results survive restarts in PostgreSQL and can be reviewed in the browser. See the [integration report](docs/experiments/0010-local-api-and-postgres-integration.md).
 
 The bounded inspection retrieved **500 public trial records**, loaded **50 synthetic TREC 2022 topics and 35,394 judgments**, produced field profiles and complete selected-ID traces, and manually inspected ten topic–trial pairs for source consistency. Raw downloads and generated reports remain local and Git-ignored.
 
@@ -118,12 +126,11 @@ The [reranking and explanation workflow](docs/reranking-and-explanations.md) opt
 
 ## Local requirements
 
-The implemented foundation requires Git and Python. The planned system may also use:
+The reproducible research environment uses:
 
-- Python 3.11+
-- Docker Desktop or Docker Engine with Compose
-- PostgreSQL
-- Qdrant
+- Python 3.12 (observed 3.12.14; use a short virtual-environment path on Windows)
+- PostgreSQL 17 and Qdrant 1.19.0 for the local application
+- Docker with Compose, or the documented native Windows services
 - Node.js 24.16+ and npm for the local frontend
 
 No paid service or GPU is required.
@@ -135,12 +142,18 @@ cp .env.example .env
 python -m venv .venv
 ```
 
-Activate the environment, then install the foundation dependencies:
+Activate the environment, then install the lightweight engineering/test dependencies:
 
 ```bash
-pip install -e ".[dev]"
+pip install -r requirements/ci.txt
 pytest
 ```
+
+This verifies invented fixtures without downloading models or the corpus. For the complete
+app, follow [API preparation](docs/local-research-api.md) and the
+[browser walkthrough](docs/research-workspace.md). The full offline experiment uses
+`requirements/research.txt` and the [release preparation steps](docs/research-release.md).
+Starting an empty database alone does not install the curated catalog or vectors.
 
 Start the local databases only when working on features that use them:
 

@@ -11,6 +11,12 @@ Scripts will provide small reproducible wrappers around package entry points. Pl
 
 Business logic must remain in Python packages rather than shell scripts.
 
+The API, frontend and Qdrant launchers tolerate a recycled PID only for `Start`: they
+first verify that the service port is free, then record a newly owned process. `Stop`
+and `Status` still refuse foreign PIDs. A stale PID file never authorizes stopping an
+unrelated process. Regression tests execute these guards with invented process inventories.
+See [release reproduction and recovery](../docs/research-release.md).
+
 `frontend-local.ps1 -Action Start|Stop|Status` manages the React/Vite workspace on loopback port 5173 with a hidden Node process. It requires locked frontend dependencies to be installed first, checks process ownership before stopping, and never changes evidence or starts other services. See [the browser walkthrough](../docs/research-workspace.md).
 
 `postgres-local.ps1 -Action Start|Stop|Status` uses installed PostgreSQL 17 binaries for a separate project-owned cluster on loopback port 55432. It keeps data under ignored `artifacts/postgres-local/` and generated credentials in ignored `.env.api.local`, without altering the installed Windows service. `api-local.ps1 -Action Start|Stop|Status` manages the loopback API on port 8000 with one worker and disabled access logs, verifying process ownership before stopping it. See [API setup and manual checks](../docs/local-research-api.md). These wrappers do not automatically migrate or import data.

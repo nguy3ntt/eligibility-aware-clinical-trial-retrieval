@@ -131,6 +131,13 @@ All generated outputs stay local. Publish only reviewed aggregate findings under
 
 ## Tests
 
+The [research release guide](../docs/research-release.md) documents two additional isolated
+entry points: `pipelines.release_index` builds/verifies resumable sharded exact embeddings
+for the complete frozen corpus; `pipelines.incremental` fetches/verifies immutable bounded
+current-registry pages and materializes stable-ID updates with overlapping watermarks.
+Neither changes the active API catalog or diagnostic Qdrant collections. Failed pages,
+broken cursor chains, changed source/configuration and regressing updates fail visibly.
+
 `python -m pytest` includes offline pipeline tests as well as the API health check. Tests use tiny invented synthetic records and mocked HTTP; no downloaded topics or trial corpus are required.
 
 ## Historical benchmark corpus gate

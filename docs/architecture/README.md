@@ -82,9 +82,14 @@ The current diagnostic implements only age/sex payload filtering. Its dense-only
 
 ## Architectural decisions
 
-The local React workspace reuses the API through a fixed loopback proxy, validates displayed evidence and discards stale responses across selection changes. [ADR 0013](decisions/0013-local-react-workspace-and-staged-evidence-views.md) records the search/fact/source views, separation from remaining screening/laboratory/experiment screens, and the no-new-inference boundary.
+[ADR 0015](decisions/0015-reproducible-local-research-release.md) separates the full frozen
+offline benchmark, bounded app and incremental current-registry lineage. It records
+resumable shard integrity, fixed comparison inputs, release identity, clean-environment
+checks and migration/recovery boundaries without changing retrieval defaults.
 
-The bounded `/v1` API now composes the established retrieval, fact extraction, parsing, screening and explanation services. PostgreSQL stores immutable source catalogs and complete operations; Qdrant remains the rebuildable vector boundary. [ADR 0012](decisions/0012-local-research-api-and-immutable-postgres-evidence.md) records explicit migrations/imports, replay identities, structured failures, local-only constraints and isolated real-database tests. React and broader normalized persistence remain future work.
+The local React workspace reuses the API through a fixed loopback proxy, validates displayed evidence and discards stale responses across selection changes. [ADR 0013](decisions/0013-local-react-workspace-and-staged-evidence-views.md) records the initial search/fact/source views. [ADR 0014](decisions/0014-evidence-comparisons-and-saved-experiments.md) extends that foundation with complete criterion-to-fact evidence, explicit sequential retrieval comparisons and immutable experiment review; it preserves score meanings, provenance checks and unearned promotion gates.
+
+The bounded `/v1` API now composes the established retrieval, fact extraction, parsing, screening and explanation services. PostgreSQL stores immutable source catalogs and complete operations; Qdrant remains the rebuildable vector boundary. [ADR 0012](decisions/0012-local-research-api-and-immutable-postgres-evidence.md) records explicit migrations/imports, replay identities, structured failures, local-only constraints and isolated real-database tests. Broader normalized persistence remains future work.
 
 Bounded cross-encoder reranking preserves candidate membership and original scores; deterministic explanations retain field-level source text and whole-criterion screening context. [ADR 0011](decisions/0011-bounded-reranking-and-evidence-explanations.md) records the fixed quality/latency protocol and why relevance scores never become eligibility probabilities or change defaults through this diagnostic.
 

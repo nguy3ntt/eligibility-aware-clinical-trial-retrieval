@@ -120,7 +120,7 @@ export const screeningStatus = z.enum([
   "likely_exclusion",
   "insufficient_information",
 ]);
-export const searchSchema = z
+export const retrievalSchema = z
   .object({
     schema_version: z.literal("research-api-v1"),
     operation_id: hash,
@@ -131,11 +131,12 @@ export const searchSchema = z
     request: z
       .object({
         case_id: text,
-        method: z.literal("dense"),
-        filter: z.literal("age_sex"),
-        fact_extractor: z.literal("legacy"),
-        rerank: z.literal(false),
-        top_k: z.number().int(),
+        method: z.enum(["dense", "sparse", "hybrid"]),
+        filter: z.enum(["age_sex", "none"]),
+        fact_extractor: z.enum(["legacy", "profile"]),
+        rerank: z.boolean(),
+        rerank_depth: z.number().int().min(1).max(50).optional(),
+        top_k: z.number().int().min(1).max(10),
       })
       .passthrough(),
     provenance: z
@@ -143,15 +144,17 @@ export const searchSchema = z
         catalog_id: text,
         catalog_sha256: hash,
         implementation_sha256: hash,
+        runtime_versions: z.record(text, text),
       })
       .passthrough(),
     result: z
       .object({
-        method: z.literal("dense"),
-        filter: z.literal("age_sex"),
-        fact_extractor: z.literal("legacy"),
+        method: z.enum(["dense", "sparse", "hybrid"]),
+        filter: z.enum(["age_sex", "none"]),
+        fact_extractor: z.enum(["legacy", "profile"]),
         dense_mode: z.literal("exact"),
-        reranker: z.null(),
+        contract: z.record(text, z.unknown()),
+        reranker: z.record(z.string(), z.unknown()).nullable(),
         candidate_count: z.number().int().nonnegative(),
         query_truncated: z.boolean(),
         default_retrieval_changed: z.literal(false),
@@ -169,6 +172,22 @@ export const searchSchema = z
                         rank: z.number().int().positive(),
                         original_rank: z.number().int().positive(),
                         score: z.number().finite(),
+                        score_kind: z
+                          .enum([
+                            "cosine_similarity",
+                            "bm25_lucene",
+                            "reciprocal_rank_fusion",
+                          ])
+                          .optional(),
+                        reranker: z
+                          .object({
+                            score: z.number().finite(),
+                            method: z.literal("learned_cross_encoder"),
+                            input: z.record(z.string(), z.unknown()),
+                          })
+                          .passthrough()
+                          .nullable()
+                          .optional(),
                       })
                       .passthrough(),
                     fields: z.record(text, field),
@@ -182,11 +201,50 @@ export const searchSchema = z
       })
       .passthrough(),
   })
-  .passthrough();
+  .passthrough()
+  .refine((p) => {
+    const r = p.result,
+      q = p.request;
+    const scoreKind = {
+      dense: "cosine_similarity",
+      sparse: "bm25_lucene",
+      hybrid: "reciprocal_rank_fusion",
+    }[q.method];
+    return (
+      r.method === q.method &&
+      r.filter === q.filter &&
+      r.fact_extractor === q.fact_extractor &&
+      Boolean(r.reranker) === (q.rerank && r.candidate_count > 0) &&
+      r.results.length <= q.top_k &&
+      r.results.length <= r.candidate_count &&
+      new Set(r.results.map((row) => row.trial_id)).size === r.results.length &&
+      r.results.every(
+        (row, i) =>
+          row.relevance.ranking.rank === i + 1 &&
+          row.eligibility_assessment === row.screening.status &&
+          (!row.relevance.ranking.score_kind ||
+            row.relevance.ranking.score_kind === scoreKind) &&
+          (!row.relevance.ranking.reranker || q.rerank),
+      )
+    );
+  }, "Ranking request, result and score meanings must agree");
 export const readySchema = z
   .object({ status: z.literal("ready"), catalog_id: text, model_loading: text })
   .passthrough();
 export type Profile = z.infer<typeof profileSchema>;
 export type Trial = z.infer<typeof trialSchema>;
-export type Search = z.infer<typeof searchSchema>;
+export type Search = z.infer<typeof retrievalSchema>;
 export type TrialPage = z.infer<typeof trialPageSchema>;
+
+// Ordinary search retains the established defaults; the laboratory opts into the wider contract.
+export const searchSchema = retrievalSchema.refine(
+  (packet) =>
+    packet.request.method === "dense" &&
+    packet.result.method === "dense" &&
+    packet.request.filter === "age_sex" &&
+    packet.result.filter === "age_sex" &&
+    packet.request.fact_extractor === "legacy" &&
+    packet.result.fact_extractor === "legacy" &&
+    !packet.request.rerank &&
+    packet.result.reranker === null,
+);

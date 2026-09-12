@@ -11,7 +11,8 @@ if (Test-Path -LiteralPath $pidPath) {
     $frontendProcessId = [int](Get-Content -LiteralPath $pidPath -Raw)
     $owned = Get-CimInstance Win32_Process -Filter "ProcessId = $frontendProcessId"
     if ($owned -and ($owned.ExecutablePath -ne $nodePath -or -not $owned.CommandLine.Contains($vitePath))) {
-        throw 'Recorded PID no longer belongs to this frontend; no process was changed.'
+        if ($Action -eq 'Start') { $owned = $null }
+        else { throw 'Recorded PID no longer belongs to this frontend; no process was changed.' }
     }
 }
 if ($Action -eq 'Status') {

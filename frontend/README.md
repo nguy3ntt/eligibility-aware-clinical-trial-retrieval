@@ -1,6 +1,6 @@
 # Research workspace
 
-React and TypeScript provide curated synthetic-case selection, read-only extracted-fact review, default trial search, and trial/criterion source inspection. No arbitrary patient text or fact editing is accepted. The dedicated screening evidence panel, retrieval laboratory and experiment dashboard remain subsequent work.
+React and TypeScript provide curated synthetic-case selection, read-only fact review, trial search/source inspection, criterion-to-fact screening evidence, retrieval comparisons and persisted experiment review. No arbitrary patient text or fact editing is accepted.
 
 ## Run locally
 
@@ -19,17 +19,28 @@ Browser requests use relative `/v1` paths through a fixed local Vite proxy. API 
 
 - `src/api/contracts.ts`: runtime validation and inferred types; unconsumed version/provenance fields are preserved.
 - `src/api/client.ts`: complete bounded pagination, fixed default search, identity checks, safe errors and cancellation.
+- `src/api/workbenchContracts.ts`: validated full screening, non-promoted NLI and saved-operation contracts.
+- `src/api/workbench.ts`: explicit laboratory requests, complete trial choices, saved operations and comparison provenance checks.
 - `src/hooks/useResource.ts`: loading, retry and stale-response suppression.
+- `src/hooks/useOperation.ts`: explicit mutations, duplicate-submit protection and cancellation without automatic POST retries.
 - `src/components/`: reusable profile, result, trial-source and evidence disclosures.
 - `src/App.tsx`: case selection and search lifecycle; changing cases discards prior results and pending responses.
 - `src/test/`: deliberately tiny invented fixtures only.
 - `e2e/`: real Chrome keyboard/mobile tests and opt-in real API integration.
 
-Search stays exact dense, legacy age/sex, no reranking; result count is 3, 5 or 10. Fact review does not change filters. Every score is labelled as retrieval relevance rather than eligibility. Screening summaries retain deterministic API labels. Full response records remain inspectable; the dedicated criterion-to-patient evidence panel is not implemented yet. Trial detail is source parsing, not a new patient assessment.
+Ordinary search stays exact dense, legacy age/sex, no reranking; result count is 3, 5 or 10. Fact review does not change filters. Trial detail is source parsing; only an explicit screening request assesses a selected synthetic pair. Full criterion outcomes retain ancestor/source context, cited fact evidence, blockers and unknowns. Optional learned NLI is separately labelled NOT PROMOTED.
 
-The second half can reuse the client, resource lifecycle, disclosures and layout. Extend validated method/operation contracts explicitly for laboratory and experiment views; do not bypass validation or silently change defaults. See [ADR 0013](../docs/architecture/decisions/0013-local-react-workspace-and-staged-evidence-views.md).
+The laboratory runs baseline and candidate requests sequentially, validates both configurations and checks catalog, code, runtime and index contracts before displaying comparisons. Object key order from PostgreSQL replay is insignificant; array order and values remain significant. Cosine, BM25, RRF and cross-encoder outputs stay separate; displayed overlap is not recall and browser round-trip time is not model latency. Configurations never alter ordinary search defaults.
+
+The dashboard lists immutable operations in ID order, opens stored evidence without recomputation and runs only the existing authored screening fixture evaluation. Historical metrics preserve negative findings, model identities and validation limitations. No new benchmark, model promotion or deployment is performed. See [ADR 0013](../docs/architecture/decisions/0013-local-react-workspace-and-staged-evidence-views.md) and [ADR 0014](../docs/architecture/decisions/0014-evidence-comparisons-and-saved-experiments.md).
 
 ## Verification
+
+For an opt-in actual-service five-scene video and screenshots, set `RUN_RELEASE_DEMO=1`
+and run `npx playwright test e2e/release-demo.spec.ts` after installing Playwright's Chrome
+and ffmpeg components. The recording uses only verified synthetic/public evidence and
+remains under ignored `test-results/`; subsequent browser runs replace that directory.
+See [release reproduction](../docs/research-release.md).
 
 ```powershell
 npm run build

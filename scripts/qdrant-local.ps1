@@ -11,6 +11,9 @@ function Get-OwnedServer {
     $serverId = [int](Get-Content -LiteralPath $pidPath -Raw)
     $serverProcess = Get-Process -Id $serverId -ErrorAction SilentlyContinue
     if ($serverProcess -and $serverProcess.Path -ne $exePath) {
+        # A recycled PID is stale bookkeeping, never permission to stop its new owner.
+        # Start still checks both ports before launching a verified executable.
+        if ($Action -eq 'Start') { return $null }
         throw 'Recorded PID belongs to another executable; no process was changed.'
     }
     return $serverProcess

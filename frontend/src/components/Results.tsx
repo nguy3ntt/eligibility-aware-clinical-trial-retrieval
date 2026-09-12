@@ -1,17 +1,21 @@
 import type { Search } from "../api/contracts";
+import { useId } from "react";
 import { JsonEvidence, StatusBadge } from "./Common";
 
 export function Results({
   search,
   openTrial,
+  screenPair,
 }: {
   search: Search;
   openTrial: (id: string) => void;
+  screenPair?: (id: string) => void;
 }) {
+  const heading = useId();
   return (
-    <section aria-labelledby="results-title">
+    <section aria-labelledby={heading}>
       <div className="section-heading">
-        <h2 id="results-title">
+        <h2 id={heading}>
           Retrieved trials{" "}
           <span className="count">{search.result.results.length}</span>
         </h2>
@@ -21,7 +25,8 @@ export function Results({
       </div>
       <p className="muted small">
         Case {search.request.case_id} · {search.result.candidate_count}{" "}
-        candidates · exact dense relevance
+        candidates · {search.result.method} relevance
+        {search.result.reranker ? " · reranked prefix" : ""}
       </p>
       <p className="small">
         {search.replayed
@@ -72,8 +77,25 @@ export function Results({
                   {result.relevance.ranking.score.toFixed(4)}
                 </strong>
                 <span className="small muted">
-                  Cosine similarity · not eligibility
+                  {search.result.method === "dense"
+                    ? "Cosine similarity"
+                    : search.result.method === "sparse"
+                      ? "BM25 score"
+                      : "RRF score"}{" "}
+                  · not eligibility
                 </span>
+                {result.relevance.ranking.reranker && (
+                  <>
+                    <span className="small">
+                      Learned cross-encoder:{" "}
+                      {result.relevance.ranking.reranker.score.toFixed(4)}
+                    </span>
+                    <span className="small muted">
+                      Original rank {result.relevance.ranking.original_rank};
+                      base retrieval score retained above.
+                    </span>
+                  </>
+                )}
               </div>
               <div>
                 <span className="metric-label">Deterministic screening</span>
@@ -90,6 +112,19 @@ export function Results({
             >
               Read trial & criteria <span aria-hidden="true">→</span>
             </button>
+            {screenPair && (
+              <button
+                className="text-button screen-pair"
+                onClick={() => screenPair(result.trial_id)}
+                aria-label={`Screen pair ${result.trial_id}`}
+              >
+                Inspect eligibility evidence →
+              </button>
+            )}
+            <JsonEvidence
+              value={result.relevance.ranking}
+              label="Ranking branches and model inputs"
+            />
           </li>
         ))}
       </ol>

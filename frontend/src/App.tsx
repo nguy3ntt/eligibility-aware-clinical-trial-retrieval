@@ -6,14 +6,19 @@ import { ErrorPanel, Loading } from "./components/Common";
 import { Results } from "./components/Results";
 import { TrialCatalog } from "./components/TrialCatalog";
 import { TrialDialog } from "./components/TrialDialog";
+import { ScreeningWorkspace } from "./components/ScreeningWorkspace";
+import { RetrievalLab } from "./components/RetrievalLab";
+import { Experiments } from "./components/Experiments";
 import { useResource } from "./hooks/useResource";
 
 function CaseWorkspace({
   id,
   openTrial,
+  screenPair,
 }: {
   id: string;
   openTrial: (id: string) => void;
+  screenPair: (id: string) => void;
 }) {
   const load = useCallback(
     (signal: AbortSignal) => api.profile(id, signal),
@@ -120,7 +125,13 @@ function CaseWorkspace({
           </div>
         )}
         {error && <ErrorPanel message={error} retry={() => void runSearch()} />}
-        {search && <Results search={search} openTrial={openTrial} />}
+        {search && (
+          <Results
+            search={search}
+            openTrial={openTrial}
+            screenPair={screenPair}
+          />
+        )}
         {!busy && !error && !search && (
           <div className="empty">
             <span className="empty-symbol" aria-hidden="true">
@@ -145,7 +156,14 @@ export function App() {
   const { state: cases, retry: retryCases } = useResource(api.cases);
   const { state: ready, retry: retryReady } = useResource(api.ready);
   const [caseId, setCaseId] = useState("");
-  const [page, setPage] = useState<"search" | "trials">("search");
+  const [page, setPage] = useState<
+    "search" | "trials" | "screening" | "lab" | "experiments"
+  >("search");
+  const [screenTrial, setScreenTrial] = useState("");
+  const screenPair = (id: string) => {
+    setScreenTrial(id);
+    setPage("screening");
+  };
   const [trial, setTrial] = useState<string | null>(null);
   return (
     <div className="app-shell">
@@ -163,18 +181,23 @@ export function App() {
         </a>
         <p className="nav-label">EXPLORE</p>
         <nav aria-label="Workspace">
-          <button
-            aria-current={page === "search" ? "page" : undefined}
-            onClick={() => setPage("search")}
-          >
-            <span aria-hidden="true">⌕</span> Search workspace
-          </button>
-          <button
-            aria-current={page === "trials" ? "page" : undefined}
-            onClick={() => setPage("trials")}
-          >
-            <span aria-hidden="true">▤</span> Trial catalog
-          </button>
+          {(
+            [
+              ["search", "Search workspace"],
+              ["trials", "Trial catalog"],
+              ["screening", "Eligibility evidence"],
+              ["lab", "Retrieval laboratory"],
+              ["experiments", "Experiment dashboard"],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              aria-current={page === key ? "page" : undefined}
+              onClick={() => setPage(key)}
+            >
+              {label}
+            </button>
+          ))}
         </nav>
         <div className="sidebar-note">
           <span className="status-dot" />
@@ -190,10 +213,7 @@ export function App() {
       <div className="main-shell">
         <header className="topbar">
           <span>
-            Clinical-trial retrieval{" "}
-            <span className="muted">
-              / {page === "search" ? "Workspace" : "Catalog"}
-            </span>
+            Clinical-trial retrieval <span className="muted">/ {page}</span>
           </span>
           <button
             className="service-state"
@@ -215,9 +235,15 @@ export function App() {
             <div>
               <p className="eyebrow">EVIDENCE BEFORE INTERPRETATION</p>
               <h1>
-                {page === "search"
-                  ? "Explore potential matches."
-                  : "Read the source."}
+                {
+                  {
+                    search: "Explore potential matches.",
+                    trials: "Read the source.",
+                    screening: "Understand the evidence.",
+                    lab: "Compare retrieval methods.",
+                    experiments: "Inspect the research.",
+                  }[page]
+                }
               </h1>
               <p className="muted">
                 An explainable research workspace for synthetic patient cases.
@@ -236,7 +262,9 @@ export function App() {
               available. {ready.message}
             </div>
           )}
-          {page === "trials" ? (
+          {page === "experiments" ? (
+            <Experiments openTrial={setTrial} />
+          ) : page === "trials" ? (
             <TrialCatalog openTrial={setTrial} />
           ) : (
             <>
@@ -276,7 +304,27 @@ export function App() {
                 )}
               </section>
               {caseId ? (
-                <CaseWorkspace key={caseId} id={caseId} openTrial={setTrial} />
+                page === "screening" ? (
+                  <ScreeningWorkspace
+                    key={caseId + screenTrial}
+                    caseId={caseId}
+                    initialTrial={screenTrial}
+                    openTrial={setTrial}
+                  />
+                ) : page === "lab" ? (
+                  <RetrievalLab
+                    key={caseId}
+                    caseId={caseId}
+                    openTrial={setTrial}
+                  />
+                ) : (
+                  <CaseWorkspace
+                    key={caseId}
+                    id={caseId}
+                    openTrial={setTrial}
+                    screenPair={screenPair}
+                  />
+                )
               ) : (
                 <div className="empty welcome">
                   <span className="empty-symbol" aria-hidden="true">

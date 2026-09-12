@@ -47,7 +47,13 @@ Milestone 2 implements BM25 over three versioned trial representations:
 
 Each representation is evaluated with and without a conservative deterministic age/sex compatibility filter. The filter removes only explicit contradictions; missing or unparsed values remain candidates. It is a retrieval ablation and does not assess eligibility.
 
-Bounded dense exact, HNSW, hybrid retrieval, optional reranking, evidence explanations and synthetic research screening are available for operational testing. Full-corpus/held-out ranking evaluation and dependable clinical-language verification remain future work.
+Bounded dense exact, HNSW, hybrid retrieval, optional reranking, evidence explanations and synthetic research screening are available for operational testing. A separate full-corpus offline release experiment now evaluates all 375,580 frozen trials and 50 synthetic topics. Held-out validation and dependable clinical-language verification remain unmet.
+
+`python -m evaluation.release_benchmark --output evaluation/reports/<fresh-id>` executes
+the fixed full-corpus protocol against a verified `pipelines.release_index` artifact.
+`python -m evaluation.release_source --output artifacts/<fresh-id>` exports only Git-visible
+working files with a SHA256 inventory, without staging or publishing. See the
+[release guide](../docs/research-release.md) and [reviewed experiment](../docs/experiments/0011-full-corpus-release-and-hardening.md).
 
 ## Metrics
 
