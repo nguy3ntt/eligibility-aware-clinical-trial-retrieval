@@ -1,4 +1,4 @@
-# Research workspace
+# Themis Trial research workspace
 
 React and TypeScript provide curated synthetic-case selection, read-only fact review, trial search/source inspection, criterion-to-fact screening evidence, retrieval comparisons and persisted experiment review. No arbitrary patient text or fact editing is accepted.
 
@@ -13,7 +13,23 @@ npm run dev
 
 Open <http://127.0.0.1:5173>. The existing API must run on loopback port 8000 with its prepared PostgreSQL catalog, Qdrant indexes and local models. The [manual guide](../docs/research-workspace.md) includes startup commands and expected results. From the repository root, `./scripts/frontend-local.ps1 -Action Start|Stop|Status` manages a hidden frontend process without installing dependencies or modifying evidence.
 
-Browser requests use relative `/v1` paths through a fixed local Vite proxy. API protections are unchanged; no permissive CORS, client credentials, telemetry or browser persistence is introduced. Development and preview servers bind to loopback with strict port 5173. Neither is qualified for public deployment.
+Browser requests use relative `/v1` paths through a fixed local Vite proxy. API protections are unchanged; no permissive CORS, client credentials, telemetry or browser evidence persistence is introduced. Only the explicit light/dark preference is stored locally. Development and preview servers bind to loopback with strict port 5173. Neither is qualified for public deployment.
+
+## Presentation and About
+
+Themis Trial preserves the original light palette and adds a forest-ink dark theme.
+The top-bar toggle follows the system preference initially and remembers only an explicit
+`light`/`dark` selection. With storage disabled it still works for the current page.
+The static About view explains the academic portfolio purpose, demonstrated skills and
+research limitations, with links to the repository owner's GitHub profile and source.
+
+Result titles underline literal words shared with their own condition/intervention source
+fields. Generic terms are excluded; source titles and evidence remain unchanged. These
+are source-topic cues, not patient-fact matches or model-attribution explanations. Hover
+previews and the accessible **Result details** button expose the same raw score/rank,
+source topics and optional separate reranker logit. Click to keep the panel open; close it
+with the button, × or Escape. Mobile panels are inline. Scores are never presented as
+calibrated match percentages. See [ADR 0016](../docs/architecture/decisions/0016-themis-presentation-and-source-highlights.md).
 
 ## Structure and contracts
 

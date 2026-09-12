@@ -82,6 +82,11 @@ The current diagnostic implements only age/sex payload filtering. Its dense-only
 
 ## Architectural decisions
 
+[ADR 0016](decisions/0016-themis-presentation-and-source-highlights.md) records the
+Themis Trial name, preference-only dark mode, academic About page and literal source-topic
+title highlights. Accessible result previews preserve the recorded score scales and do
+not introduce percentage-match claims or new inference.
+
 [ADR 0015](decisions/0015-reproducible-local-research-release.md) separates the full frozen
 offline benchmark, bounded app and incremental current-registry lineage. It records
 resumable shard integrity, fixed comparison inputs, release identity, clean-environment

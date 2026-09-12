@@ -1,4 +1,4 @@
-# Eligibility-Aware Clinical Trial Retrieval
+# Themis Trial
 
 **Explainable, eligibility-aware clinical-trial retrieval for synthetic patient profiles.**
 

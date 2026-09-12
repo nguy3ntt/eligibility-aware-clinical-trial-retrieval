@@ -1,6 +1,11 @@
 import type { Search } from "../api/contracts";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { JsonEvidence, StatusBadge } from "./Common";
+import {
+  HighlightedTitle,
+  ResultInsights,
+  sourceTopics,
+} from "./ResultInsights";
 
 export function Results({
   search,
@@ -12,6 +17,7 @@ export function Results({
   screenPair?: (id: string) => void;
 }) {
   const heading = useId();
+  const [hovered, setHovered] = useState<string | null>(null);
   return (
     <section aria-labelledby={heading}>
       <div className="section-heading">
@@ -33,6 +39,11 @@ export function Results({
           ? "This is a stored operation, not a fresh search or assessment."
           : "This completed operation is saved with its source and model versions."}
       </p>
+      <p className="small muted">
+        Underlined title phrases also occur in the trial’s source topics. Hover
+        over a result or use its details button to inspect the recorded score
+        and source context.
+      </p>
       {search.result.query_truncated && (
         <p className="notice">
           The query exceeded the encoder limit and was shortened. Full source
@@ -50,7 +61,15 @@ export function Results({
       )}
       <ol className="results-list">
         {search.result.results.map((result) => (
-          <li className="result-card" key={result.trial_id}>
+          <li
+            className="result-card"
+            key={result.trial_id}
+            onMouseEnter={() => setHovered(result.trial_id)}
+            onMouseLeave={() => setHovered(null)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setHovered(null);
+            }}
+          >
             <div className="result-top">
               <span className="rank">
                 {String(result.relevance.ranking.rank).padStart(2, "0")}
@@ -60,12 +79,27 @@ export function Results({
             <h3>
               <button
                 className="title-button"
+                aria-label={
+                  result.relevance.fields.brief_title?.normalized ||
+                  result.trial_id
+                }
                 onClick={() => openTrial(result.trial_id)}
               >
-                {result.relevance.fields.brief_title?.normalized ||
-                  result.trial_id}
+                <HighlightedTitle
+                  title={
+                    result.relevance.fields.brief_title?.normalized ||
+                    result.trial_id
+                  }
+                  topics={sourceTopics(result)}
+                />
               </button>
             </h3>
+            <ResultInsights
+              result={result}
+              search={search}
+              hovered={hovered === result.trial_id}
+              dismissHover={() => setHovered(null)}
+            />
             <p className="summary-text">
               {result.relevance.fields.brief_summary?.normalized ||
                 "No summary was supplied in the source."}

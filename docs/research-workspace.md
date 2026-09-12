@@ -59,6 +59,21 @@ For a fresh frontend installation, use Node 24.16+ and run `npm ci` inside `fron
 4. Open the existing **reviewed experiment** for `m9-reranking-release`. Its stored operation ID is `f7ff5f0c1cc7f4727f302e94f4f47bc03da412d9c8485cf0a6526d1b2304e19b` in the prepared workspace. The nDCG@10 table should show approximately **0.5584 dense**, **0.5368 rerank-10**, **0.4956 rerank-20** and **0.3823 BM25**. This preserves the unfavorable reranking result; the UI must not imply reranker promotion. Read the visible limitations and pinned model revision. A fresh installation must explicitly import its reviewed report before this record is available; opening the dashboard does not import it.
 5. Open saved screening and search operations too. They preserve their own case/configuration and evidence regardless of the currently selected case elsewhere in the application. Unknown report layouts retain the complete stored manifest without fabricated metrics. Tables may scroll horizontally within their container on narrow screens; the page itself should not overflow.
 
+## Theme, project information and result details
+
+Use the top-bar **Light mode / Dark mode** button to switch palettes. An explicit choice
+survives a page refresh; no case or result evidence is stored in the browser. The initial
+theme follows your operating system. **About the project** explains Themis Trial's academic
+portfolio purpose, demonstrated skills and limitations, with GitHub profile/source links.
+It remains readable even when the local services are unavailable.
+
+In search results, underlined title phrases also occur in the trial's own source condition
+or intervention fields. They are literal source-topic cues—not proof of a patient match.
+Hover over a card to preview its recorded raw score, rank and topics, or use **Result details**
+with touch/keyboard. Clicking keeps it open; Escape or × closes it. Reranker logits remain
+separate and raw retrieval scores are not displayed as percentages. No new model call or
+eligibility assessment is performed. Titles without literal source-topic overlap stay plain.
+
 ## Failure behavior
 
 When the API is unavailable, affected views show a fixed message and **Try again** rather than old case results. To test this deliberately, stop the API using its wrapper and reload the browser; restart it and retry to recover. Do not stop unrelated services. A saved replay can remain available if only Qdrant is down, but readiness and fresh search cannot pass. Another active operation produces a retryable busy message. Invalid or contradictory packets are rejected before display.

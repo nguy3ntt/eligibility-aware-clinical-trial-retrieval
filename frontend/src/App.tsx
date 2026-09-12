@@ -9,6 +9,8 @@ import { TrialDialog } from "./components/TrialDialog";
 import { ScreeningWorkspace } from "./components/ScreeningWorkspace";
 import { RetrievalLab } from "./components/RetrievalLab";
 import { Experiments } from "./components/Experiments";
+import { About } from "./components/About";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { useResource } from "./hooks/useResource";
 
 function CaseWorkspace({
@@ -157,7 +159,7 @@ export function App() {
   const { state: ready, retry: retryReady } = useResource(api.ready);
   const [caseId, setCaseId] = useState("");
   const [page, setPage] = useState<
-    "search" | "trials" | "screening" | "lab" | "experiments"
+    "search" | "trials" | "screening" | "lab" | "experiments" | "about"
   >("search");
   const [screenTrial, setScreenTrial] = useState("");
   const screenPair = (id: string) => {
@@ -176,7 +178,7 @@ export function App() {
             ✳
           </span>
           <span>
-            Trial Atlas<small>RESEARCH WORKSPACE</small>
+            Themis Trial<small>RESEARCH WORKSPACE</small>
           </span>
         </a>
         <p className="nav-label">EXPLORE</p>
@@ -188,6 +190,7 @@ export function App() {
               ["screening", "Eligibility evidence"],
               ["lab", "Retrieval laboratory"],
               ["experiments", "Experiment dashboard"],
+              ["about", "About the project"],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -213,22 +216,25 @@ export function App() {
       <div className="main-shell">
         <header className="topbar">
           <span>
-            Clinical-trial retrieval <span className="muted">/ {page}</span>
+            Themis Trial <span className="muted">/ {page}</span>
           </span>
-          <button
-            className="service-state"
-            onClick={retryReady}
-            aria-label="Refresh service readiness"
-          >
-            <span
-              className={`status-dot ${ready.status === "ready" ? "" : "warning"}`}
-            />
-            {ready.status === "ready"
-              ? "Services ready"
-              : ready.status === "loading"
-                ? "Checking services…"
-                : "Check local services"}
-          </button>
+          <div className="topbar-actions">
+            <ThemeToggle />
+            <button
+              className="service-state"
+              onClick={retryReady}
+              aria-label="Refresh service readiness"
+            >
+              <span
+                className={`status-dot ${ready.status === "ready" ? "" : "warning"}`}
+              />
+              {ready.status === "ready"
+                ? "Services ready"
+                : ready.status === "loading"
+                  ? "Checking services…"
+                  : "Check local services"}
+            </button>
+          </div>
         </header>
         <main id="main">
           <div className="page-heading">
@@ -242,6 +248,7 @@ export function App() {
                     screening: "Understand the evidence.",
                     lab: "Compare retrieval methods.",
                     experiments: "Inspect the research.",
+                    about: "The purpose behind the project.",
                   }[page]
                 }
               </h1>
@@ -262,7 +269,9 @@ export function App() {
               available. {ready.message}
             </div>
           )}
-          {page === "experiments" ? (
+          {page === "about" ? (
+            <About />
+          ) : page === "experiments" ? (
             <Experiments openTrial={setTrial} />
           ) : page === "trials" ? (
             <TrialCatalog openTrial={setTrial} />
