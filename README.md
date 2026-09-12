@@ -14,6 +14,26 @@ The project combines classical information retrieval, dense embeddings, a vector
 > [!IMPORTANT]
 > This is an educational research prototype. It must use public trial information and synthetic patient cases only. It must never claim to determine clinical eligibility, recommend treatment, diagnose a patient, or replace review by qualified professionals.
 
+## See the project
+
+[![Themis Trial academic portfolio interface in dark mode](docs/assets/showcase/about-dark.png)](docs/showcase.md)
+
+**[Project showcase and guided demo](docs/showcase.md)** ·
+**[Download the recorded walkthrough (WebM)](docs/assets/showcase/themis-trial-demo.webm)** ·
+**[Run the local workspace](docs/research-workspace.md)**
+
+An end-to-end academic portfolio demonstrating information retrieval, evidence-preserving
+data engineering, honest ML evaluation and a React/FastAPI research interface.
+The recording uses the real local services and synthetic cases; saved operations are
+labelled as historical replay. It is not a public clinical service.
+
+| Scope | What was built and evaluated |
+|---|---|
+| Offline benchmark | 375,580 frozen public trials, 50 synthetic topics, 35,394 relevance judgments |
+| Interactive demonstration | Separate 443-trial search index; catalog includes three additional invented trials and 51 synthetic cases |
+| Engineering | BM25, exact dense search, HNSW diagnostics, RRF, optional reranking, criterion evidence, durable operation replay |
+| Research boundary | No held-out or clinical validation; learned screening outputs remain advisory |
+
 ## Central research question
 
 > Can an eligibility-aware hybrid retrieval system distinguish genuinely eligible trials from trials that are medically relevant but exclude the patient?
@@ -100,7 +120,7 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 The [browser research workspace](docs/research-workspace.md) supports curated synthetic-case selection, read-only fact review, retrieval and trial/criterion source inspection. Its eligibility evidence panel connects every criterion outcome to exact synthetic facts and missing information; optional NLI advice remains visibly separate. A retrieval laboratory compares explicit configurations against the unchanged dense baseline, and an experiment dashboard reopens persisted operations and historical reports. Open it locally on port 5173 after starting the services. No real-patient input or clinical decisions are introduced.
 
-The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, a reproducible full-corpus BM25 baseline, and bounded dense/hybrid retrieval. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. Full-corpus dense evaluation and clinical validation remain deferred.
+The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, reproducible full-corpus BM25/dense/hybrid evaluation, and a separate bounded interactive search index. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. Held-out validation and clinical validation remain unmet.
 
 The [local API guide](docs/local-research-api.md) provides startup and manual tests for 51 curated synthetic cases and 446 public/invented trials. Search, criterion screening, source lookup and saved experiments retain evidence and version identities. Defaults remain exact dense plus legacy age/sex filters; reranking is opt-in and learned screening advisories are never promoted. Results survive restarts in PostgreSQL and can be reviewed in the browser. See the [integration report](docs/experiments/0010-local-api-and-postgres-integration.md).
 

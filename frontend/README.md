@@ -52,11 +52,17 @@ The dashboard lists immutable operations in ID order, opens stored evidence with
 
 ## Verification
 
-For an opt-in actual-service five-scene video and screenshots, set `RUN_RELEASE_DEMO=1`
+For an opt-in actual-service walkthrough including search, source, screening, comparison,
+evaluation and both About themes, set `RUN_RELEASE_DEMO=1`
 and run `npx playwright test e2e/release-demo.spec.ts` after installing Playwright's Chrome
 and ffmpeg components. The recording uses only verified synthetic/public evidence and
 remains under ignored `test-results/`; subsequent browser runs replace that directory.
 See [release reproduction](../docs/research-release.md).
+The reviewed public selection and scene guide live in the [portfolio showcase](../docs/showcase.md).
+The recorder fixes the initial system theme to light before demonstrating dark mode.
+Run it alone against the local API; do not run competing inference jobs. It may reopen
+saved operations, which stay explicitly labelled as historical replay. Generating media
+does not automatically replace the reviewed public assets.
 
 ```powershell
 npm run build

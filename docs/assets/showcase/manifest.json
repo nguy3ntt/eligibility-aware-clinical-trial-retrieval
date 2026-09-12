@@ -1,0 +1,42 @@
+{
+  "assets": [
+    {
+      "bytes": 89993,
+      "sha256": "6b39cefeb6bf918ba5351d3c213c03082b0a957398db859a7df0ac40169b8a95",
+      "file": "about-dark.png"
+    },
+    {
+      "bytes": 90513,
+      "sha256": "f1e24510542acd6cabcb997524ea6445e1fb32cb96b651fcb64e7d918268e709",
+      "file": "about-light.png"
+    },
+    {
+      "bytes": 72347,
+      "sha256": "e97bebbad307782ccd9637882cdd89517f35a114ad54733ccf9074baa1343731",
+      "file": "comparison-dark.png"
+    },
+    {
+      "bytes": 62209,
+      "sha256": "e613d62c1d4ae83c7aacece4a359f2d0b0253ac0a4abf9dc83d08051ee6a16eb",
+      "file": "screening-dark.png"
+    },
+    {
+      "bytes": 116316,
+      "sha256": "1dc2dd7ff5911cd2ad857d1f6a5df440b2cb88aaca37093b749a66778b3fe535",
+      "file": "search-dark.png"
+    },
+    {
+      "bytes": 3934987,
+      "sha256": "e039d5c56a37803a5177f72c11ee83869042e3c001210aaa24cd7e9598fd02d8",
+      "file": "themis-trial-demo.webm"
+    }
+  ],
+  "capture_spec": "frontend/e2e/release-demo.spec.ts",
+  "captured_on": "2026-09-13",
+  "viewport": {
+    "height": 900,
+    "width": 1280
+  },
+  "capture_spec_sha256": "52003766a3ce16d7674a4c0b4d84a67610f0e941183027c3e4a49d0c87db551b",
+  "source": "Actual local services; public trials and synthetic/invented cases; saved replay labelled in UI"
+}

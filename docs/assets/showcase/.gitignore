@@ -1,0 +1,11 @@
+# Publish only the explicitly reviewed portfolio selection.
+*
+!.gitignore
+!README.md
+!manifest.json
+!about-dark.png
+!about-light.png
+!search-dark.png
+!screening-dark.png
+!comparison-dark.png
+!themis-trial-demo.webm
