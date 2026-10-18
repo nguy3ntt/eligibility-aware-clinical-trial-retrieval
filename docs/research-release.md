@@ -10,6 +10,11 @@ Read the [experiment report](experiments/0011-full-corpus-release-and-hardening.
 results and limitations, and [ADR 0015](architecture/decisions/0015-reproducible-local-research-release.md)
 for the boundaries. All commands below run from the repository root. Output IDs must be new.
 
+The subsequent [independent-evaluation extension](independent-evaluation.md) freezes
+the same retrieval methods before acquiring 75 separate TREC 2021 synthetic cases,
+seals rankings before labels and evaluates external judgments. Its study and conclusions
+are separate from the original 50-topic release below.
+
 ## Environment and source identity
 
 The observed research runtime is Windows 11, Python 3.12.14, four CPU threads, float32 and

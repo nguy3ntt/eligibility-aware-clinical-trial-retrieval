@@ -94,6 +94,14 @@ with age/sex filtering and no reranking. All **150 original-XML screening explan
 remain insufficient information**. The topics are not held out and clinical validation
 has not been performed. See the [full report](experiments/0011-full-corpus-release-and-hardening.md).
 
+The subsequent [independent retrieval study](experiments/0012-independent-trec2021-evaluation.md)
+evaluates 75 separate TREC 2021 cases with 35,832 external judgments. Methods were
+frozen before cases were acquired, and rankings sealed before labels. Dense achieved
+0.3277 nDCG@10 versus matched BM25 0.1959; the paired difference interval is
+[+0.0647, +0.1995]. Hybrid/reranking secondary intervals include zero. This strengthens
+the retrieval evidence on a project-configuration holdout; pretrained-model contamination
+and clinical validity remain unresolved. The original demo video predates this extension.
+
 ## A concise introduction for a portfolio or interview
 
 > I built Themis Trial, an explainable clinical-trial retrieval research system using

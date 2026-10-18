@@ -1,5 +1,16 @@
 # Evaluation
 
+## Independent external-case evaluation
+
+`python -m evaluation.independent` freezes configuration before TREC 2021 topic
+acquisition, seals all rankings before acquiring external judgments, and evaluates the
+existing five retrieval configurations on the separate synthetic case set. The primary
+contrast is exact dense versus matched BM25 nDCG@10; hybrid and both rerank depths are
+secondary exploratory analyses. See the [workflow and manual checks](../docs/independent-evaluation.md)
+and [ADR 0017](../docs/architecture/decisions/0017-independent-trec2021-evaluation.md).
+This is a project-configuration holdout, not certified model-training independence or
+clinical validation. Reports, source cases and qrels stay local and ignored.
+
 ## API integration verification
 
 `python -m evaluation.api_smoke --output-id <fresh-id>` runs 24 checks against the local HTTP API, including source lookup, three retrieval methods, optional models, persisted operations, screening outcomes and structured rejection. Reports stay under ignored `evaluation/reports/`. PostgreSQL/Qdrant integration tests also compare API dense ranks/scores against an independent exact calculation and exercise migrations, immutable imports and restart persistence. See [setup and manual checks](../docs/local-research-api.md) and [the integration report](../docs/experiments/0010-local-api-and-postgres-integration.md). These are engineering checks; they do not establish clinical validation or ranking improvement.
@@ -47,7 +58,7 @@ Milestone 2 implements BM25 over three versioned trial representations:
 
 Each representation is evaluated with and without a conservative deterministic age/sex compatibility filter. The filter removes only explicit contradictions; missing or unparsed values remain candidates. It is a retrieval ablation and does not assess eligibility.
 
-Bounded dense exact, HNSW, hybrid retrieval, optional reranking, evidence explanations and synthetic research screening are available for operational testing. A separate full-corpus offline release experiment now evaluates all 375,580 frozen trials and 50 synthetic topics. Held-out validation and dependable clinical-language verification remain unmet.
+Bounded dense exact, HNSW, hybrid retrieval, optional reranking, evidence explanations and synthetic research screening are available for operational testing. The original full-corpus release evaluates 375,580 frozen trials and 50 inspected synthetic topics. The separate independent workflow evaluates 75 TREC 2021 cases against external judgments with frozen methods and sealed rankings. This is a project-configuration holdout; dependable clinical-language verification and clinical validation remain unmet.
 
 `python -m evaluation.release_benchmark --output evaluation/reports/<fresh-id>` executes
 the fixed full-corpus protocol against a verified `pipelines.release_index` artifact.

@@ -6,6 +6,17 @@ The project evaluates three different questions separately:
 2. Did it distinguish potentially eligible trials from relevant-but-excluded trials?
 3. Did the approximate vector index reproduce exact vector neighbours efficiently?
 
+## Independent retrieval extension
+
+The [2021 study](experiments/0012-independent-trec2021-evaluation.md) evaluates 75
+separate synthetic cases using 35,832 external judgments over the same full corpus.
+Code/configuration is frozen before topic acquisition and rankings are sealed before
+label acquisition. Dense versus matched BM25 nDCG@10 is the primary comparison; hybrid
+and both rerank depths are secondary exploratory contrasts. This is a holdout from
+recorded project development, with unknown overlap in public pretrained-model data.
+See [protocol and manual checks](independent-evaluation.md). The earlier 2022 topics
+remain development evidence. No new criterion-screening accuracy is inferred.
+
 ## Retrieval metrics
 
 - nDCG@5 and nDCG@10

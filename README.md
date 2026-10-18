@@ -30,9 +30,10 @@ labelled as historical replay. It is not a public clinical service.
 | Scope | What was built and evaluated |
 |---|---|
 | Offline benchmark | 375,580 frozen public trials, 50 synthetic topics, 35,394 relevance judgments |
+| Independent retrieval evaluation | 75 separate TREC 2021 synthetic cases and 35,832 external judgments; rankings sealed before labels |
 | Interactive demonstration | Separate 443-trial search index; catalog includes three additional invented trials and 51 synthetic cases |
 | Engineering | BM25, exact dense search, HNSW diagnostics, RRF, optional reranking, criterion evidence, durable operation replay |
-| Research boundary | No held-out or clinical validation; learned screening outputs remain advisory |
+| Research boundary | Project-configuration holdout evaluated; model-training independence and clinical validation remain unproven |
 
 ## Central research question
 
@@ -74,6 +75,14 @@ and hybrid plus rerank-20 0.3689. The hybrid/reranking intervals include zero, t
 are not held out, and all 150 displayed screening pairs remain insufficient information.
 The [release guide](docs/research-release.md) covers reproducibility, incremental registry
 updates, index migration/recovery, CI and a repeatable portfolio recording.
+
+A subsequent [independent evaluation](docs/experiments/0012-independent-trec2021-evaluation.md)
+freezes the existing methods before acquiring 75 TREC 2021 synthetic cases and seals
+rankings before downloading 35,832 external judgments. Dense scores **0.3277 nDCG@10**
+versus matched BM25 **0.1959**, with a paired 95% interval for the difference of
+**[+0.0647, +0.1995]**. Hybrid/reranking secondary intervals still include zero.
+This is a holdout from recorded project development; public model-training overlap is
+unknown. See [reproduction and manual checks](docs/independent-evaluation.md).
 
 ## Data sources
 
@@ -120,7 +129,7 @@ See [docs/architecture/README.md](docs/architecture/README.md) for component bou
 
 The [browser research workspace](docs/research-workspace.md) supports curated synthetic-case selection, read-only fact review, retrieval and trial/criterion source inspection. Its eligibility evidence panel connects every criterion outcome to exact synthetic facts and missing information; optional NLI advice remains visibly separate. A retrieval laboratory compares explicit configurations against the unchanged dense baseline, and an experiment dashboard reopens persisted operations and historical reports. Open it locally on port 5173 after starting the services. No real-patient input or clinical decisions are introduced.
 
-The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, reproducible full-corpus BM25/dense/hybrid evaluation, and a separate bounded interactive search index. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. Held-out validation and clinical validation remain unmet.
+The repository includes a bounded local FastAPI application with PostgreSQL evidence persistence, source inspection and historical corpus validation, reproducible full-corpus BM25/dense/hybrid evaluation, and a separate bounded interactive search index. Local Qdrant supports verified imports, exact/ANN search, measured neighbor recall and latency, and checked snapshot/restore/rebuild procedures. A separate project-configuration holdout has been evaluated; clinical validation remains unmet.
 
 The [local API guide](docs/local-research-api.md) provides startup and manual tests for 51 curated synthetic cases and 446 public/invented trials. Search, criterion screening, source lookup and saved experiments retain evidence and version identities. Defaults remain exact dense plus legacy age/sex filters; reranking is opt-in and learned screening advisories are never promoted. Results survive restarts in PostgreSQL and can be reviewed in the browser. See the [integration report](docs/experiments/0010-local-api-and-postgres-integration.md).
 
@@ -205,6 +214,7 @@ Then open `http://localhost:8000/health` or the generated API documentation at `
 - [Architecture](docs/architecture/README.md)
 - [Data model](docs/data-model.md)
 - [Evaluation protocol](docs/evaluation.md)
+- [Independent evaluation and manual checks](docs/independent-evaluation.md)
 - [Safety and limitations](docs/safety.md)
 - [Local vector storage and exact-search checks](docs/local-vector-storage.md)
 - [Contribution workflow](CONTRIBUTING.md)
