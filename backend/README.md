@@ -12,6 +12,11 @@ The backend orchestrates existing services without notebook state. `services/app
 
 `schemas/eligibility.py` defines evidence-backed criterion and trial screening packets. `services/eligibility/rules.py` checks whole supported clauses, validates current source-derived facts/parses and exposes `validate_assessment` to reproduce stored decisions. `semantic.py` provides pinned local NLI advisories that never change screening status. Missing or unsupported evidence stays unknown. See [screening behavior and manual checks](../docs/eligibility-verification.md); the API reuses these services without making medical decisions.
 
+Verifier v2 adds the bounded whole-clause age grammar in `services/eligibility/age.py`;
+patient vocabulary v2 supplies exact-unit platelet facts. Both flow through the existing
+API/CLI evidence schema and new code identities. Shared context, missing facts and
+unsupported units still abstain. See the [coverage guide](../docs/screening-coverage.md).
+
 The optional `services/retrieval/reranker.py` scores bounded query/summary pairs using a pinned local cross-encoder. `services/explanations/evidence.py` produces fixed statements from retained field evidence and reproduced screening assessments. Original ranking scores, model inputs and eligibility outcomes remain distinct. See [the operating guide](../docs/reranking-and-explanations.md). Search and screening routes reuse these services.
 
 ## Implemented routes

@@ -15,6 +15,11 @@ The current command-line workflow turns explicitly synthetic narratives into aud
 
 The complete bounded vocabulary and aliases live in `backend/app/services/patient_extraction/rules.py`. Unsupported wording remains in the original narrative. `coverage: bounded_rules_not_exhaustive` is intentional: a profile is not a complete medical record. `missing_categories` means no recognized mention of that category, not proof that the patient lacks it; family/history/uncertain mentions remain distinguishable in each fact. A clause containing one recognized fact can still contain unsupported information.
 
+Vocabulary v2 adds platelet measurements with explicit `/mm3`, `/mm³` or `x10^9/L`
+units. Spelling normalization does not convert or rescale values. Existing current,
+family, history, uncertainty and conflict evidence remains intact; see the
+[screening coverage examples](screening-coverage.md).
+
 Each fact includes the canonical project label/value, original quote and offsets, containing context, deterministic rule identity, assertion, certainty, temporality, and experiencer. `asserted` describes the source wording and is not model confidence. `current` means no supported historical/planned cue was recognized; this heuristic can be wrong in complex prose. `historical` does not imply that a disease has resolved, and `absent` is a negated mention rather than independently verified absence. Do not perform clinical screening from these labels.
 
 ## Try the local examples

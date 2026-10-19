@@ -97,10 +97,19 @@ export function EvidencePanel({
                 {decision.evidence.start}–{decision.evidence.end}
               </p>
               {criterion.review_reasons.length > 0 && (
-                <p className="review-note">
-                  Parser review:{" "}
-                  {criterion.review_reasons.map(words).join("; ")}
-                </p>
+                <>
+                  {decision.rule_id === "whole-age-predicate-v2" && (
+                    <p className="small">
+                      The age rule checked the complete quoted requirement.
+                      Original parser review notes are retained for
+                      traceability.
+                    </p>
+                  )}
+                  <p className="review-note">
+                    Parser review:{" "}
+                    {criterion.review_reasons.map(words).join("; ")}
+                  </p>
+                </>
               )}
               <h4>Synthetic fact evidence</h4>
               {!decision.fact_ids.length && (

@@ -13,7 +13,7 @@ This workflow connects the synthetic patient facts to trial-side criteria. It pr
 | `unknown` | Missing, uncertain, conflicting, unanchored, differently measured or unsupported evidence prevents interpretation |
 | `not_applicable` | Reliable patient sex makes an explicit supported inline sex condition inapplicable |
 
-Complete age/sex and same-unit numeric predicates are supported. Examples include `Age 18 to 65 years.`, `Male.`, `Hemoglobin >= 10 g/dL.` and `For female participants: Hemoglobin >= 10 g/dL.` Only existing patient-extractor facts are usable. Platelet thresholds can be parsed by the trial parser, but the current patient extractor does not supply platelet facts, so those comparisons abstain.
+Complete age/sex and same-unit numeric predicates are supported. Examples include `Age 18 to 65 years.`, `Male.`, `Hemoglobin >= 10 g/dL.` and `For female participants: Hemoglobin >= 10 g/dL.` The v2 extension adds whole age clauses such as `Ages 3 to <9 years` and platelet facts in explicit units. See [coverage behavior and manual checks](screening-coverage.md). Unit conversion remains unsupported.
 
 There is no unit conversion, calendar-age approximation, inference from missing medication/lab history, or choice among conflicting results. Historical, family/other-person, uncertain, approximate and interval-valued facts do not become exact current measurements. Extra timing/visit wording, unresolved preambles, nesting and shared exceptions/alternatives prevent unsupported decisions. Some cues conservatively block all criteria in the trial. This limitation is deliberate and substantially reduces public-trial coverage.
 
@@ -93,7 +93,7 @@ Expect source evidence and `insufficient_information`, not a forced decision. `-
 python -m evaluation.screening --cases evaluation/data/fixtures/synthetic_patient_facts.json --source-id criteria-source-m7-v3 --output-id my-screening-audit-01
 ```
 
-This audits the 16 synthetic profiles against 12 public trial parses: 192 pairs and 2,224 criterion assessments. All currently abstain because the bounded rules cannot safely resolve the complex source text. This is a coverage result, **not** evidence that the patients are eligible, excluded or medically unmatched. The audit caps work at 200 pairs and retains every assessment locally.
+The original v1 audit covered 16 synthetic profiles against 12 public trial parses: 192 pairs and 2,224 criterion assessments, all abstaining on the complex source text. Those are historical results. The later [v2 coverage audit](screening-coverage.md) separately compares the 150 full-release pairs. Neither audit establishes independent clinical accuracy. The original audit command caps work at 200 pairs and retains every assessment locally.
 
 ## Automated checks and files
 

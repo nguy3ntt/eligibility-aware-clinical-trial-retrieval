@@ -46,6 +46,12 @@ calibrated match percentages. See [ADR 0016](../docs/architecture/decisions/0016
 
 Ordinary search stays exact dense, legacy age/sex, no reranking; result count is 3, 5 or 10. Fact review does not change filters. Trial detail is source parsing; only an explicit screening request assesses a selected synthetic pair. Full criterion outcomes retain ancestor/source context, cited fact evidence, blockers and unknowns. Optional learned NLI is separately labelled NOT PROMOTED.
 
+Verifier v2 adds bounded age/platelet screening through the same evidence contract.
+The age view retains original parser review notes alongside its full-quote check.
+See [coverage behavior and manual checks](../docs/screening-coverage.md). The opt-in
+`e2e/screening-coverage.spec.ts` verifies an actual curated pair, cited age facts and
+the remaining insufficient-information status.
+
 The laboratory runs baseline and candidate requests sequentially, validates both configurations and checks catalog, code, runtime and index contracts before displaying comparisons. Object key order from PostgreSQL replay is insignificant; array order and values remain significant. Cosine, BM25, RRF and cross-encoder outputs stay separate; displayed overlap is not recall and browser round-trip time is not model latency. Configurations never alter ordinary search defaults.
 
 The dashboard lists immutable operations in ID order, opens stored evidence without recomputation and runs only the existing authored screening fixture evaluation. Historical metrics preserve negative findings, model identities and validation limitations. No new benchmark, model promotion or deployment is performed. See [ADR 0013](../docs/architecture/decisions/0013-local-react-workspace-and-staged-evidence-views.md) and [ADR 0014](../docs/architecture/decisions/0014-evidence-comparisons-and-saved-experiments.md).

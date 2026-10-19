@@ -71,9 +71,11 @@ export function About() {
           <p>
             The offline benchmark covers 375,580 frozen trials and 50 previously
             inspected synthetic topics. The interactive demo uses a separate
-            bounded catalog. Full-corpus evaluation is not held-out or clinical
-            validation; all 150 benchmark screening explanations remain
-            insufficient information.
+            bounded catalog. That original full-corpus evaluation is not
+            held-out or clinical validation; it recorded insufficient
+            information for all 150 screening explanations. Later bounded
+            screening extensions retain unresolved criteria and require
+            professional review.
           </p>
         </section>
       </div>

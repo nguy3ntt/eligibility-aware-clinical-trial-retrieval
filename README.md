@@ -72,7 +72,7 @@ The [full-corpus experiment](docs/experiments/0011-full-corpus-release-and-harde
 evaluates 375,580 frozen trials against all 50 synthetic TREC 2022 cases. With age/sex
 filtering, matched title/condition BM25 scores 0.2156 nDCG@10, dense 0.3471, hybrid 0.3487
 and hybrid plus rerank-20 0.3689. The hybrid/reranking intervals include zero, the topics
-are not held out, and all 150 displayed screening pairs remain insufficient information.
+are not held out; at that release all 150 displayed screening pairs were insufficient information.
 The [release guide](docs/research-release.md) covers reproducibility, incremental registry
 updates, index migration/recovery, CI and a repeatable portfolio recording.
 
@@ -83,6 +83,13 @@ versus matched BM25 **0.1959**, with a paired 95% interval for the difference of
 **[+0.0647, +0.1995]**. Hybrid/reranking secondary intervals still include zero.
 This is a holdout from recorded project development; public model-training overlap is
 unknown. See [reproduction and manual checks](docs/independent-evaluation.md).
+
+The subsequent [screening-coverage extension](docs/screening-coverage.md) adds explicit
+whole-clause age bounds and same-unit platelet facts. On the same 150 historical pairs,
+five of 1,434 criteria gain supported outcomes: four satisfied and one violated. Trial
+summaries become 149 insufficient-information and one likely exclusion. This is a
+bounded coverage audit, not independently measured accuracy. Complex context and
+missing evidence continue to trigger abstention.
 
 ## Data sources
 
@@ -166,15 +173,27 @@ No paid service or GPU is required.
 
 ## Quick start
 
-```bash
-cp .env.example .env
-python -m venv .venv
+Start with the [guided setup](docs/setup.md), which separates fixture tests, the local
+application and the full offline experiment. In the prepared Windows workspace:
+
+```powershell
+.\scripts\check-setup.ps1 -Profile app -Online -Verify
 ```
 
-Activate the environment, then install the lightweight engineering/test dependencies:
+The cross-platform equivalent is `python -B -m pipelines.setup_check --profile app --online --verify`.
+The checker can report missing dependencies before installation and does not change data
+or start services. For a lightweight fixture-test installation:
 
 ```bash
-pip install -r requirements/ci.txt
+python -m venv ../.venv
+```
+
+Activate that environment ([Windows/Linux instructions](docs/setup.md#install-the-fixture-test-environment)),
+then install the lightweight engineering/test dependencies:
+
+```bash
+python -m pip install -r requirements/ci.txt
+python -B -m pipelines.setup_check --profile tests
 pytest
 ```
 
@@ -212,6 +231,7 @@ Then open `http://localhost:8000/health` or the generated API documentation at `
 ## Documentation
 
 - [Architecture](docs/architecture/README.md)
+- [Guided setup and diagnostics](docs/setup.md)
 - [Data model](docs/data-model.md)
 - [Evaluation protocol](docs/evaluation.md)
 - [Independent evaluation and manual checks](docs/independent-evaluation.md)

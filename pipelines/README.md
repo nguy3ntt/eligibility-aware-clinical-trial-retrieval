@@ -1,5 +1,13 @@
 # Pipelines
 
+## Setup diagnostics
+
+`python -B -m pipelines.setup_check --profile tests|app|benchmark` checks the selected
+environment before running pipelines. `--verify` checks artifact/model hashes;
+`--online` reads app service readiness. The entry point itself uses the standard library
+so missing dependencies produce actionable reports. No data/configuration is changed.
+See [guided setup and manual checks](../docs/setup.md).
+
 ## API catalog preparation
 
 `python -m pipelines.api_data migrate` applies explicit PostgreSQL migrations. `seed` validates existing synthetic topics, retrieval artifacts and source evidence, then transactionally imports the immutable 51-case/446-trial catalog. `status` checks the database revision/catalog without printing credentials. Identical imports are repeatable; conflicting evidence requires a new version, not an overwrite. `import-experiment --report-id <completed-report-id>` preserves a historical local report manifest and its checksum without rerunning it. See [the API guide](../docs/local-research-api.md) for setup, prerequisites and manual requests.

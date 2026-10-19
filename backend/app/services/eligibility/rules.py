@@ -6,10 +6,11 @@ from pathlib import Path
 
 from backend.app.schemas.eligibility import CriterionAssessment, TrialAssessment
 from backend.app.schemas.patient import text_hash
+from backend.app.services.eligibility.age import context_text, whole_age
 from backend.app.services.patient_extraction.extractor import extract_profile
 from pipelines.criteria.parser import parse_eligibility
 
-VERSION = "bounded-screening-rules-v1"
+VERSION = "bounded-screening-rules-v2"
 CONTEXT = re.compile(
     r"\b(?:or|if|unless|except\w*|provided|however|either|any of|one of|waiv\w*)\b", re.I
 )
@@ -18,7 +19,8 @@ SEX = re.compile(r"(?:Sex:\s*)?(male|female)(?: participants)?", re.I)
 
 
 def verifier_hash():
-    return text_hash(Path(__file__).read_text(encoding="utf-8"))
+    paths = [Path(__file__), Path(__file__).with_name("age.py")]
+    return text_hash("\n".join(p.read_text(encoding="utf-8") for p in paths))
 
 
 def usable_facts(profile, kind, name=None):
@@ -66,7 +68,7 @@ def check_predicate(value, constraint):
     }[constraint.operator]()
 
 
-def evaluate_criterion(profile, parsed, criterion):
+def evaluate_criterion(profile, parsed, criterion, shared_context=None):
     fact_ids = []
 
     def result(outcome, reason, rule="abstain-v1", missing=()):
@@ -85,7 +87,9 @@ def evaluate_criterion(profile, parsed, criterion):
     if any(c.section == "unknown" for c in parsed.criteria):
         return result("unknown", "unknown_section_or_preamble")
     peers = [c for c in parsed.criteria if c.section_ordinal == criterion.section_ordinal]
-    if CONTEXT.search(parsed.source.text) or any(
+    if shared_context is None:
+        shared_context = bool(CONTEXT.search(context_text(parsed)))
+    if shared_context or any(
         c.parent_id or "embedded_heading_requires_review" in c.review_reasons for c in peers
     ):
         return result("unknown", "shared_or_nested_context_requires_review")
@@ -93,10 +97,11 @@ def evaluate_criterion(profile, parsed, criterion):
     gate = GATE.fullmatch(wording)
     if gate:
         wording = gate[2].strip().rstrip(".").strip()
+    age = whole_age(gate[2] if gate else criterion.evidence.text)
     numeric = criterion.constraints[0] if len(criterion.constraints) == 1 else None
     numeric_complete = numeric is not None and wording == numeric.evidence.text.strip()
     sex = SEX.fullmatch(wording)
-    if not numeric_complete and not sex:
+    if not numeric_complete and not sex and age is None:
         return result(
             "unknown", "unsupported_or_incomplete_predicate", missing=("criterion interpretation",)
         )
@@ -107,25 +112,29 @@ def evaluate_criterion(profile, parsed, criterion):
             return result("unknown", issue, missing=("reliable current patient sex",))
         if subject.value.lower() != gate[1].lower():
             return result("not_applicable", "explicit_sex_condition_false", "sex-applicability-v1")
-    kind = "sex" if sex else "age" if numeric.name == "age" else "measurement"
-    fact, mentions, issue = usable_facts(profile, kind, None if sex else numeric.name)
+    name = "sex" if sex else "age" if age else numeric.name
+    kind = "sex" if sex else "age" if name == "age" else "measurement"
+    fact, mentions, issue = usable_facts(profile, kind, None if sex else name)
     fact_ids.extend(f.fact_id for f in mentions)
     if issue:
-        return result(
-            "unknown", issue, missing=(f"reliable current patient {kind if sex else numeric.name}",)
-        )
-    if numeric_complete and fact.unit != numeric.unit:
-        return result(
-            "unknown", "units_differ_no_conversion", missing=(f"{numeric.name} in {numeric.unit}",)
-        )
-    truth = fact.value.lower() == sex[1].lower() if sex else check_predicate(fact.value, numeric)
+        return result("unknown", issue, missing=(f"reliable current patient {name}",))
+    unit = age.unit if age else numeric.unit if numeric_complete else None
+    if not sex and fact.unit != unit:
+        return result("unknown", "units_differ_no_conversion", missing=(f"{name} in {unit}",))
+    truth = (
+        fact.value.lower() == sex[1].lower()
+        if sex
+        else age.accepts(fact.value)
+        if age
+        else check_predicate(fact.value, numeric)
+    )
     satisfied = truth if criterion.section == "inclusion" else not truth
     return result(
         "satisfied" if satisfied else "violated",
         "inclusion_predicate_" + str(truth).lower()
         if criterion.section == "inclusion"
         else "exclusion_predicate_" + str(truth).lower(),
-        "exact-sex-v1" if sex else "same-unit-numeric-v1",
+        "exact-sex-v1" if sex else "whole-age-predicate-v2" if age else "same-unit-numeric-v1",
     )
 
 
@@ -134,7 +143,10 @@ def verify(profile, parsed):
         raise ValueError("profile differs from current source extraction")
     if parse_eligibility(parsed.source) != parsed:
         raise ValueError("criteria differ from current source parsing")
-    assessments = tuple(evaluate_criterion(profile, parsed, c) for c in parsed.criteria)
+    shared_context = bool(CONTEXT.search(context_text(parsed)))
+    assessments = tuple(
+        evaluate_criterion(profile, parsed, c, shared_context) for c in parsed.criteria
+    )
     blocking = tuple(c.criterion_id for c in assessments if c.outcome == "violated")
     unknown = tuple(c.criterion_id for c in assessments if c.outcome == "unknown")
     status = (

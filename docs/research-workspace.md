@@ -4,6 +4,10 @@ The browser workspace lets a reviewer choose a synthetic case, inspect extracted
 
 ## Start this prepared workspace
 
+Use the [guided setup](setup.md) if dependencies, models or artifacts are missing.
+The read-only `scripts/check-setup.ps1 -Profile app -Online -Verify` reports specific
+next steps; omit `-Online` when services have not been started yet.
+
 Run from the nested Git repository in PowerShell:
 
 ```powershell

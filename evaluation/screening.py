@@ -65,6 +65,7 @@ def code_fingerprints():
         "backend/app/schemas/criteria.py",
         "backend/app/schemas/eligibility.py",
         "backend/app/services/eligibility/rules.py",
+        "backend/app/services/eligibility/age.py",
         "backend/app/services/eligibility/semantic.py",
         "pipelines/screening.py",
         "pipelines/screening_data.py",

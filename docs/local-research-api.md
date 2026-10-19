@@ -12,6 +12,10 @@ PostgreSQL stores immutable catalog identities, source records and completed ope
 
 ## Start in this Windows workspace
 
+The [guided setup](setup.md) assembles the dependency, data, index and service sequence.
+Use `python -B -m pipelines.setup_check --profile app --online --verify` for read-only
+diagnostics. This distinguishes package installation from a prepared catalog/index.
+
 Run from the nested Git repository. The models, artifacts, database dependencies, migrations and initial catalog have already been prepared here.
 
 ```powershell

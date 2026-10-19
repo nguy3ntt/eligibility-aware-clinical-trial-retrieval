@@ -1,5 +1,10 @@
 # Scripts
 
+`check-setup.ps1 -Profile tests|app|benchmark [-Online] [-Verify] [-Json]` runs the
+read-only Python setup checker using the existing sibling environment or `-Python`.
+It can diagnose missing packages before the project is installed and gives concrete
+next steps. It does not start services or change data. See the [guided setup](../docs/setup.md).
+
 Scripts will provide small reproducible wrappers around package entry points. Planned commands include:
 
 - bootstrap the local environment;

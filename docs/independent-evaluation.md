@@ -33,6 +33,13 @@ were acquired under that first freeze. Both records remain intact for audit.
 
 ## Original-run inspection (safe to repeat)
 
+**Version note:** the subsequent screening-coverage extension changes executable source.
+The commands below intentionally require the original frozen source/runtime, preserved
+in `artifacts/independent-evaluation-source-v1`. Running strict verification against the
+newer screening implementation rejects the changed code as designed; it does not erase
+or invalidate the original study. Inspect its immutable protocol/seal/report as historical
+evidence. Current screening has its own [reproducing audit](screening-coverage.md).
+
 ```powershell
 python -m evaluation.independent verify --study evaluation/reports/independent-trec2021-v2
 python -m pytest evaluation/tests/test_independent.py -p no:cacheprovider

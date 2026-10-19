@@ -90,8 +90,8 @@ The hybrid and rerank-20 exploratory intervals versus dense both include zero.
 Reranking also receives additional summary text, so this is not a model-only comparison.
 An earlier eligibility-text BM25 baseline scored 0.3761 with different inputs. There is
 no claim of universal superiority or earned promotion; ordinary search stays exact dense
-with age/sex filtering and no reranking. All **150 original-XML screening explanations
-remain insufficient information**. The topics are not held out and clinical validation
+with age/sex filtering and no reranking. The original release recorded **150 original-XML
+screening explanations as insufficient information**. The topics are not held out and clinical validation
 has not been performed. See the [full report](experiments/0011-full-corpus-release-and-hardening.md).
 
 The subsequent [independent retrieval study](experiments/0012-independent-trec2021-evaluation.md)
@@ -101,6 +101,12 @@ frozen before cases were acquired, and rankings sealed before labels. Dense achi
 [+0.0647, +0.1995]. Hybrid/reranking secondary intervals include zero. This strengthens
 the retrieval evidence on a project-configuration holdout; pretrained-model contamination
 and clinical validity remain unresolved. The original demo video predates this extension.
+
+The later [screening-coverage extension](screening-coverage.md) adds explicit age-bound
+grammar and same-unit platelets. Its paired historical audit supports five additional
+criterion outcomes; trial summaries are 149 insufficient-information and one likely
+exclusion. Coverage is not an independent accuracy measurement. The recorded demo
+predates these rule changes and remains a historical walkthrough.
 
 ## A concise introduction for a portfolio or interview
 

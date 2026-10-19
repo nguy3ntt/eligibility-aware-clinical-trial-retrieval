@@ -1,6 +1,6 @@
 """Bounded, reviewable vocabulary and context rules; no inferred diagnoses."""
 
-VERSION = "synthetic-facts-rules-v1"
+VERSION = "synthetic-facts-rules-v2"
 
 # Canonical labels are project vocabulary, not licensed terminology codes.
 LEXICON = {
@@ -65,6 +65,14 @@ LEXICON = {
 
 # Exact units only; unsupported units are retained as issues, never guessed.
 MEASUREMENTS = {
+    "platelets": (
+        r"platelets?|platelet count",
+        {
+            "/mm3": "/mm3",
+            "/mm³": "/mm3",
+            "x10^9/L": "x10^9/L",
+        },
+    ),
     "hemoglobin": (r"ha?emoglobin|Hb", {"g/dL": "g/dL", "g/L": "g/L"}),
     "hba1c": (r"HbA1c", {"%": "%", "mmol/mol": "mmol/mol"}),
     "creatinine": (

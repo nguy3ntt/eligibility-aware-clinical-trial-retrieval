@@ -21,6 +21,11 @@ clinical validation. Reports, source cases and qrels stay local and ignored.
 
 ## Research screening and semantic advisories
 
+The [screening-coverage extension](../docs/screening-coverage.md) adds a separate
+31-pair authored fixture and `evaluation.screening_coverage capture|evaluate|verify`
+for paired unlabelled coverage on the 150 original release pairs. It preserves the
+34-pair fixture, source/criterion identities, residual unknowns and every changed decision.
+
 `python -m evaluation.screening --output-id <fresh-id>` measures exact criterion/trial outcomes on 34 authored synthetic pairs. Optional synthetic cases plus a source artifact add a separate unlabelled historical coverage audit. `python -m evaluation.semantic_screening --output-id <fresh-id>` measures the pinned local NLI model on 24 calibration and 30 disjoint test pairs: raw/scaled accuracy, NLL, Brier/ECE, reliability bins, high-confidence precision and coverage. Test labels never choose temperature or thresholds. The semantic model remains advisory-only; the original public-trial audit currently yields all unknowns. See [reviewed results](../docs/experiments/0008-bounded-screening-and-semantic-verification.md) and [manual checks](../docs/eligibility-verification.md).
 
 ## Eligibility parsing and criterion vectors
