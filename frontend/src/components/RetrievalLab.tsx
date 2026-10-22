@@ -73,6 +73,9 @@ export function RetrievalLab({
               <option value="dense">Exact dense</option>
               <option value="sparse">BM25 sparse</option>
               <option value="hybrid">Hybrid · RRF</option>
+              <option value="field_passages">
+                Fields and passages · experimental RRF
+              </option>
             </select>
           </label>
           <label>
@@ -138,6 +141,14 @@ export function RetrievalLab({
           {run.busy ? "Comparing…" : "Run comparison"}
         </button>
       </form>
+      {options.method === "field_passages" && (
+        <p className="notice">
+          Uses a separately prepared 443-trial field/passage artifact and the
+          same query encoder and filters. Source passages are evidence of
+          retrieval, not proof of eligibility. No quality improvement is
+          assumed.
+        </p>
+      )}
       {run.busy && (
         <Loading label="Running baseline, then candidate configuration…" />
       )}

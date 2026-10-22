@@ -1,5 +1,10 @@
 # Pipelines
 
+`pipelines.field_passages build|verify|search` prepares a separate bounded field/passage
+artifact with original XML spans and exact MiniLM vectors; it never overwrites an active
+index. `pipelines.screening --grouped` adds a separate three-valued logic tree. Both are
+opt-in. See [methods and manual tests](../docs/grouped-and-passage-methods.md).
+
 ## Setup diagnostics
 
 `python -B -m pipelines.setup_check --profile tests|app|benchmark` checks the selected

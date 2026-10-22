@@ -1,0 +1,218 @@
+{
+  "schema_version": "screening-fixtures-v1",
+  "dataset_id": "grouped-development-v1",
+  "synthetic": true,
+  "notice": "Entirely invented development contracts. No independent clinical review or accuracy claim.",
+  "pairs": [
+    {
+      "id": "group-or-pass",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Either (Age >=18 years) or (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-or-unknown",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Inclusion Criteria:\n- Either (Age >=18 years) or (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-or-fail",
+      "patient": "A 10-year-old boy. Hemoglobin 8 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Either (Age >=18 years) or (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "group-and-fail",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Inclusion Criteria:\n- (Age >=18 years) AND (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "group-and-unknown",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- (Age >=18 years) AND (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-nested-pass",
+      "patient": "A 40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- All of the following:\n  - Age >=18 years.\n  - Any of the following:\n    - Hemoglobin >=10 g/dL.\n    - Creatinine <=1 mg/dL.",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-exclusion-or",
+      "patient": "A 40-year-old man. Hemoglobin 8 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years.\nExclusion Criteria:\n- Any of the following:\n  - Hemoglobin <10 g/dL.\n  - Creatinine >2 mg/dL.",
+      "expected": [],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "group-exclusion-and",
+      "patient": "A 40-year-old man. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years.\nExclusion Criteria:\n- All of the following:\n  - Hemoglobin <10 g/dL.\n  - Creatinine >2 mg/dL.",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-not",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- NOT (Age <18 years).",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-not-precedence",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- NOT (Age <18 years) OR (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-if-false",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- If (Female), then (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-if-true-missing",
+      "patient": "A 40-year-old woman.",
+      "eligibility": "Inclusion Criteria:\n- If (Female), then (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-if-true-fail",
+      "patient": "A 40-year-old woman. Hemoglobin 8 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- If (Female), then (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "likely_exclusion"
+    },
+    {
+      "id": "group-inline-sex",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >=10 g/dL.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-waiver",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Required: (Age >=18 years), unless (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-waiver-missing",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Inclusion Criteria:\n- Required: (Age >=18 years), unless (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-exception",
+      "patient": "A 40-year-old man. Hemoglobin 8 g/dL. Creatinine 1 mg/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years.\nExclusion Criteria:\n- Exclude if (Hemoglobin <10 g/dL), unless (Creatinine <=1 mg/dL).",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-none",
+      "patient": "A 40-year-old man. Hemoglobin 12 g/dL. Creatinine 1 mg/dL.",
+      "eligibility": "Inclusion Criteria:\n- None of the following:\n  - Hemoglobin <10 g/dL.\n  - Creatinine >2 mg/dL.",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-ambiguous-unless",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years unless Hemoglobin >=10 g/dL.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-mixed-unscoped",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years AND Male OR Hemoglobin >=10 g/dL.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-preamble",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Exceptions may apply.\nInclusion Criteria:\n- Age >=18 years.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-unknown-heading",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Inclusion Criteria:\n- Special conditions:\n  - Age >=18 years.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-units",
+      "patient": "A 40-year-old man. Hemoglobin 120 g/L.",
+      "eligibility": "Inclusion Criteria:\n- (Age >=18 years) AND (Hemoglobin >=10 g/dL).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-family",
+      "patient": "The patient's father is a 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- NOT (Age <18 years).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-local-false-not-global",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Any of the following:\n  - Age >=18 years.\n  - Hemoglobin >=10 g/dL.",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-shared-global",
+      "patient": "A 10-year-old boy. Hemoglobin 12 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Age >=18 years.\nExclusion Criteria:\n- These requirements may be waived if reviewed.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-unsupported-disease",
+      "patient": "A 40-year-old man with asthma.",
+      "eligibility": "Inclusion Criteria:\n- (Age >=18 years) AND (Diagnosis of asthma).",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-older-atom",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 years or older.",
+      "expected": [],
+      "status": "potential_match"
+    },
+    {
+      "id": "group-exclusion-only",
+      "patient": "A 40-year-old man.",
+      "eligibility": "Exclusion Criteria:\n- Age <18 years.",
+      "expected": [],
+      "status": "insufficient_information"
+    },
+    {
+      "id": "group-unbalanced",
+      "patient": "A 10-year-old boy.",
+      "eligibility": "Inclusion Criteria:\n- (Age >=18 years OR (Male).",
+      "expected": [],
+      "status": "insufficient_information"
+    }
+  ]
+}

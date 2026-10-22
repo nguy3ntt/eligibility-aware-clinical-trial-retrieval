@@ -102,6 +102,7 @@ export function ResultInsights({
     dense: "Cosine similarity",
     sparse: "BM25 score",
     hybrid: "RRF score",
+    field_passages: "Field/passage RRF score",
   }[search.result.method];
   const close = () => {
     setPinned(false);

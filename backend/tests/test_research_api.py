@@ -84,6 +84,51 @@ def test_defaults_and_openapi(setup_api):
     assert client.get("/docs").status_code == 200
 
 
+def test_grouped_screening_is_opt_in_and_stored_separately(setup_api):
+    client, _, store = setup_api
+    body = {"case_id": "reranking-demo", "trial_id": "NCT90009002"}
+    ordinary = client.post("/v1/screening", json=body).json()
+    grouped = client.post("/v1/screening", json={**body, "grouped": True})
+    assert grouped.status_code == 200
+    packet = grouped.json()
+    assert ordinary["result"]["grouped"] is None
+    assert packet["result"]["assessment"] == ordinary["result"]["assessment"]
+    assert packet["result"]["grouped"]["status"] == "potential_match"
+    assert packet["operation_id"] != ordinary["operation_id"]
+    assert len(store.data["operations"]) == 2
+    assert client.post("/v1/screening", json={**body, "grouped": True}).json()["replayed"]
+    rejected = client.post("/v1/screening", json={**body, "grouped": "true"})
+    assert rejected.status_code == 422
+
+
+def test_missing_optional_passage_artifact_has_actionable_failure(setup_api, tmp_path):
+    client, service, store = setup_api
+    service.settings = service.settings.model_copy(update={"processed_data_dir": str(tmp_path)})
+    response = client.post(
+        "/v1/search", json={"case_id": "reranking-demo", "method": "field_passages"}
+    )
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "passage_artifact_unavailable"
+    assert "Prepare" in response.json()["error"]["message"]
+    assert not store.data["operations"]
+
+
+def test_passage_source_matches_extended_hybrid_catalog_without_relaxing_identity():
+    from backend.app.services.application import passage_catalog_matches
+
+    dense = {
+        "schema_version": "qdrant-trials-v1",
+        "artifact_sha256": "source-bytes",
+        "snapshot_sha256": "model-bytes",
+        "documents": 443,
+    }
+    hybrid = {**dense, "schema_version": "qdrant-hybrid-v1", "lexical": {"version": "fixture"}}
+    assert passage_catalog_matches(dense, hybrid)
+    assert not passage_catalog_matches(dense, {**hybrid, "artifact_sha256": "different"})
+    assert not passage_catalog_matches(dense, {**hybrid, "snapshot_sha256": "different"})
+    assert not passage_catalog_matches(dense, {**hybrid, "documents": 442})
+
+
 @pytest.mark.parametrize(
     "trial_id,status",
     [

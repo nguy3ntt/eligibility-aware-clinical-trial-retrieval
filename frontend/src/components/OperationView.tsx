@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Operation } from "../api/workbenchContracts";
 import { EvidencePanel } from "./EvidencePanel";
+import { GroupedEvidence } from "./GroupedEvidence";
 import { Results } from "./Results";
 import { JsonEvidence, words } from "./Common";
 
@@ -29,10 +30,18 @@ export function OperationView({
       {p.kind === "search" ? (
         <Results search={{ ...p, replayed: true }} openTrial={openTrial} />
       ) : p.kind === "screening" ? (
-        <EvidencePanel
-          assessment={p.result.assessment}
-          semantic={p.result.semantic}
-        />
+        <>
+          {p.result.grouped && (
+            <GroupedEvidence
+              grouped={p.result.grouped}
+              assessment={p.result.assessment}
+            />
+          )}
+          <EvidencePanel
+            assessment={p.result.assessment}
+            semantic={p.result.semantic}
+          />
+        </>
       ) : p.kind === "experiment" ? (
         <>
           <h3>Authored screening evaluation</h3>

@@ -1,5 +1,10 @@
 # Themis Trial research workspace
 
+The optional grouped-screening checkbox and field/passage laboratory method expose
+experimental source-linked methods without changing ordinary search/screening defaults.
+Saved operations retain the separate interpretation and passage evidence. See
+[manual steps and measured limitations](../docs/grouped-and-passage-methods.md).
+
 React and TypeScript provide curated synthetic-case selection, read-only fact review, trial search/source inspection, criterion-to-fact screening evidence, retrieval comparisons and persisted experiment review. No arbitrary patient text or fact editing is accepted.
 
 ## Run locally

@@ -30,6 +30,15 @@ def implementation():
     return {p.relative_to(root).as_posix(): file_hash(p) for p in paths}
 
 
+def passage_catalog_matches(base, hybrid):
+    """The hybrid catalog extends the same dense source; it is not the dense contract."""
+    return hybrid == {
+        **base,
+        "schema_version": "qdrant-hybrid-v1",
+        "lexical": hybrid.get("lexical"),
+    }
+
+
 class ResearchService:
     def __init__(self, store, settings):
         self.store, self.settings = store, settings
@@ -147,6 +156,18 @@ class ResearchService:
                 },
             }
             # Changing fixture labels cannot reuse old results.
+            if kind == "search" and request.method == "field_passages":
+                passage_root = Path(self.settings.processed_data_dir) / local_id(
+                    self.settings.api_passage_id
+                )
+                if not (passage_root / "manifest.json").is_file():
+                    raise ServiceError(
+                        503,
+                        "passage_artifact_unavailable",
+                        "Prepare the optional passage artifact; "
+                        "see docs/grouped-and-passage-methods.md.",
+                    )
+                provenance["passage_manifest_sha256"] = file_hash(passage_root / "manifest.json")
             if kind == "experiment":
                 from pipelines.screening_data import DEFAULT_FIXTURE
 
@@ -181,7 +202,12 @@ class ResearchService:
             "assessment": assessment.model_dump(mode="json"),
             "explanation": explain_screening(assessment),
             "semantic": None,
+            "grouped": None,
         }
+        if request.grouped:
+            from backend.app.services.eligibility.grouped import verify_grouped
+
+            result["grouped"] = verify_grouped(assessment.profile, assessment.parsed)
         if request.semantic:
             from backend.app.services.eligibility.semantic import LocalNLI, advise
 
@@ -217,13 +243,45 @@ class ResearchService:
         if request.filter == "none":
             facts = None
         encoded = self.encoder.encode([case.text])
-        with QdrantRepository(self.settings.qdrant_url, self.settings.api_collection) as repo:
-            # The bounded API verifies all stored vectors/payloads before returning fresh results.
-            verify_hybrid(repo, contract, points)
-            branches, audit = search_branches(
-                repo, contract, lexical, encoded.vectors[0].tolist(), case.text, demographics=facts
+        passage_audit = None
+        if request.method == "field_passages":
+            from pipelines.field_passages import load, rank
+
+            loaded = load(
+                Path(self.settings.processed_data_dir) / local_id(self.settings.api_passage_id),
+                Path(self.settings.processed_data_dir) / local_id(self.settings.api_index_id),
+                Path(self.settings.processed_data_dir) / local_id(self.settings.api_evidence_id),
             )
-        ranking = rank_results(branches, method=request.method, k=100)
+            if (
+                not passage_catalog_matches(loaded[0]["source_contract"], contract)
+                or loaded[0]["encoder"] != self.encoder.metadata
+            ):
+                raise EvidenceError("passage query runtime/catalog differs")
+            # Verify source fields against the database's immutable trial catalog too.
+            for tid, record in loaded[2].items():
+                if self.record("trials", tid) != record:
+                    raise EvidenceError("passage fields differ from catalog")
+            ranking = rank(loaded, encoded.vectors[0], demographics=facts)
+            passage_audit = {
+                "version": loaded[0]["version"],
+                "parameters": loaded[0]["parameters"],
+                "statistics": loaded[0]["statistics"],
+                "benchmark_comparable": False,
+            }
+            audit = {"status": "not_used", "reason": "dense_field_passages_only"}
+        else:
+            with QdrantRepository(self.settings.qdrant_url, self.settings.api_collection) as repo:
+                # The bounded API verifies all stored vectors/payloads before fresh results.
+                verify_hybrid(repo, contract, points)
+                branches, audit = search_branches(
+                    repo,
+                    contract,
+                    lexical,
+                    encoded.vectors[0].tolist(),
+                    case.text,
+                    demographics=facts,
+                )
+            ranking = rank_results(branches, method=request.method, k=100)
         model = None
         if request.rerank and ranking:
             if self.reranker is None:
@@ -264,6 +322,7 @@ class ResearchService:
             "benchmark_comparable": False,
             "semantic_promotion": False,
             "default_retrieval_changed": False,
+            "passage_retrieval": passage_audit,
         }
 
     def experiment(self, request):

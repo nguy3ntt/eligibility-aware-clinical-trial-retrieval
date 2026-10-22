@@ -54,7 +54,11 @@ test("record the synthetic research portfolio walkthrough", async ({
     .getByRole("button", { name: "Eligibility evidence", exact: true })
     .click();
   await page.getByLabel("Trial to screen").selectOption("NCT90009001");
-  await page.getByRole("checkbox").check();
+  await page
+    .getByRole("checkbox", {
+      name: "Include optional learned NLI advisories (never promoted)",
+    })
+    .check();
   await page.getByRole("button", { name: "Screen selected pair" }).click();
   await expect(
     page.getByText("insufficient information", { exact: true }),

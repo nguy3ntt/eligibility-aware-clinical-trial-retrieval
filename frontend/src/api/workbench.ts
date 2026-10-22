@@ -8,7 +8,7 @@ import {
 } from "./workbenchContracts";
 
 export type RetrievalOptions = {
-  method: "dense" | "sparse" | "hybrid";
+  method: "dense" | "sparse" | "hybrid" | "field_passages";
   filter: "age_sex" | "none";
   fact_extractor: "legacy" | "profile";
   rerank: boolean;
@@ -86,16 +86,19 @@ export const workbench = {
     trial_id: string,
     semantic: boolean,
     signal: AbortSignal,
+    grouped = false,
   ) => {
     const packet = await request("screening", screeningSchema, signal, {
       case_id,
       trial_id,
       semantic,
+      ...(grouped ? { grouped: true } : {}),
     });
     if (
       packet.request.case_id !== case_id ||
       packet.request.trial_id !== trial_id ||
-      packet.request.semantic !== semantic
+      packet.request.semantic !== semantic ||
+      Boolean(packet.request.grouped) !== grouped
     )
       throw new ApiError(
         "identity",

@@ -5,6 +5,7 @@ import { useResource } from "../hooks/useResource";
 import { useOperation } from "../hooks/useOperation";
 import { ErrorPanel, JsonEvidence, Loading } from "./Common";
 import { EvidencePanel } from "./EvidencePanel";
+import { GroupedEvidence } from "./GroupedEvidence";
 
 export function ScreeningWorkspace({
   caseId,
@@ -18,9 +19,14 @@ export function ScreeningWorkspace({
   const { state, retry } = useResource(workbench.trialChoices);
   const [trial, setTrial] = useState(initialTrial),
     [semantic, setSemantic] = useState(false);
+  const [grouped, setGrouped] = useState(false);
   const run = useOperation<Screening>();
   const submit = () =>
-    run.run((signal) => workbench.screen(caseId, trial, semantic, signal));
+    run.run((signal) =>
+      grouped
+        ? workbench.screen(caseId, trial, semantic, signal, true)
+        : workbench.screen(caseId, trial, semantic, signal),
+    );
   return (
     <div className="panel">
       <h2>Screen a case–trial pair</h2>
@@ -71,6 +77,18 @@ export function ScreeningWorkspace({
             Include optional learned NLI advisories (never promoted)
           </label>
           <div className="button-row">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={grouped}
+                disabled={run.busy}
+                onChange={(e) => {
+                  setGrouped(e.target.checked);
+                  run.reset();
+                }}
+              />
+              Compare experimental grouped eligibility logic
+            </label>
             <button
               className="primary"
               disabled={
@@ -102,6 +120,12 @@ export function ScreeningWorkspace({
           <p className="small">
             A saved replay is historical evidence, not fresh inference.
           </p>
+          {run.data.result.grouped && (
+            <GroupedEvidence
+              grouped={run.data.result.grouped}
+              assessment={run.data.result.assessment}
+            />
+          )}
           <EvidencePanel
             assessment={run.data.result.assessment}
             semantic={run.data.result.semantic}

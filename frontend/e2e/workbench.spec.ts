@@ -31,7 +31,11 @@ test("real evidence, optional NLI, ranking comparisons and persisted experiments
     { timeout: 180000 },
   );
   await page.getByLabel("Trial to screen").selectOption("NCT90009001");
-  await page.getByRole("checkbox").check();
+  await page
+    .getByRole("checkbox", {
+      name: "Include optional learned NLI advisories (never promoted)",
+    })
+    .check();
   await page.getByRole("button", { name: "Screen selected pair" }).click();
   await expect(
     page.getByText("insufficient information", { exact: true }),

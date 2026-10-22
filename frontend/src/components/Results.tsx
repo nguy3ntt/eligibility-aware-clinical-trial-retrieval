@@ -1,6 +1,7 @@
 import type { Search } from "../api/contracts";
 import { useId, useState } from "react";
 import { JsonEvidence, StatusBadge } from "./Common";
+import { PassageEvidence } from "./PassageEvidence";
 import {
   HighlightedTitle,
   ResultInsights,
@@ -104,6 +105,9 @@ export function Results({
               {result.relevance.fields.brief_summary?.normalized ||
                 "No summary was supplied in the source."}
             </p>
+            {search.result.method === "field_passages" && (
+              <PassageEvidence ranking={result.relevance.ranking} />
+            )}
             <div className="result-measures">
               <div>
                 <span className="metric-label">Retrieval relevance</span>

@@ -91,6 +91,13 @@ summaries become 149 insufficient-information and one likely exclusion. This is 
 bounded coverage audit, not independently measured accuracy. Complex context and
 missing evidence continue to trigger abstention.
 
+The [experimental grouped-logic and passage methods](docs/grouped-and-passage-methods.md)
+add source-aligned AND/OR/NOT/conditional trees and an explicit field/passage retrieval
+option in the laboratory. Both preserve defaults. On the inspected diagnostic pool,
+passage fusion improves candidate recall slightly but worsens top-ten ranking quality;
+grouped historical summaries remain conservative. See the
+[controlled results and limitations](docs/experiments/0015-grouped-and-passage-methods.md).
+
 ## Data sources
 
 - **[ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api)** for public clinical-trial records.

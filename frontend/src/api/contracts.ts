@@ -120,6 +120,47 @@ export const screeningStatus = z.enum([
   "likely_exclusion",
   "insufficient_information",
 ]);
+export const passageRankingSchema = z
+  .object({
+    score_kind: z.literal("reciprocal_rank_fusion"),
+    branches: z
+      .record(
+        z.string(),
+        z
+          .object({
+            rank: z.number().int().min(1).max(100),
+            raw_score: z.number().min(-1).max(1),
+            score_kind: z.literal("cosine_similarity"),
+            rrf_contribution: z.number().positive(),
+            segment: z
+              .object({
+                trial_id: trialId,
+                field: text,
+                text,
+                source_sha256: hash,
+                locator: text,
+                original_item: z.number().int().nonnegative().nullable(),
+                start: z.number().int().nonnegative().nullable(),
+                end: z.number().int().positive().nullable(),
+              })
+              .passthrough(),
+          })
+          .passthrough(),
+      )
+      .refine(
+        (branches) =>
+          Object.keys(branches).length > 0 &&
+          Object.keys(branches).every((k) =>
+            [
+              "title_conditions",
+              "brief_summary",
+              "detailed_description",
+              "interventions",
+            ].includes(k),
+          ),
+      ),
+  })
+  .passthrough();
 export const retrievalSchema = z
   .object({
     schema_version: z.literal("research-api-v1"),
@@ -131,7 +172,7 @@ export const retrievalSchema = z
     request: z
       .object({
         case_id: text,
-        method: z.enum(["dense", "sparse", "hybrid"]),
+        method: z.enum(["dense", "sparse", "hybrid", "field_passages"]),
         filter: z.enum(["age_sex", "none"]),
         fact_extractor: z.enum(["legacy", "profile"]),
         rerank: z.boolean(),
@@ -149,7 +190,7 @@ export const retrievalSchema = z
       .passthrough(),
     result: z
       .object({
-        method: z.enum(["dense", "sparse", "hybrid"]),
+        method: z.enum(["dense", "sparse", "hybrid", "field_passages"]),
         filter: z.enum(["age_sex", "none"]),
         fact_extractor: z.enum(["legacy", "profile"]),
         dense_mode: z.literal("exact"),
@@ -159,6 +200,14 @@ export const retrievalSchema = z
         query_truncated: z.boolean(),
         default_retrieval_changed: z.literal(false),
         semantic_promotion: z.literal(false),
+        passage_retrieval: z
+          .object({
+            version: z.literal("field-passages-v1"),
+            benchmark_comparable: z.literal(false),
+          })
+          .passthrough()
+          .nullable()
+          .optional(),
         results: z
           .array(
             z
@@ -209,7 +258,24 @@ export const retrievalSchema = z
       dense: "cosine_similarity",
       sparse: "bm25_lucene",
       hybrid: "reciprocal_rank_fusion",
+      field_passages: "reciprocal_rank_fusion",
     }[q.method];
+    if (
+      q.method === "field_passages" &&
+      (!r.passage_retrieval ||
+        r.results.some((row) => {
+          const parsed = passageRankingSchema.safeParse(row.relevance.ranking);
+          return (
+            !parsed.success ||
+            Object.values(parsed.data.branches).some(
+              (b) =>
+                b.segment.trial_id !== row.trial_id ||
+                Math.abs(b.rrf_contribution - 1 / (60 + b.rank)) > 1e-12,
+            )
+          );
+        }))
+    )
+      return false;
     return (
       r.method === q.method &&
       r.filter === q.filter &&

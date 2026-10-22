@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--source-id", type=local_id)
     parser.add_argument("--trial-id")
     parser.add_argument("--semantic", action="store_true")
+    parser.add_argument("--grouped", action="store_true")
     parser.add_argument("--output-id", type=local_id)
     args = parser.parse_args()
     external = bool(args.cases or args.topics)
@@ -57,6 +58,10 @@ def main():
             parsed = parse_eligibility(source)
         assessment = verify(extract_profile(case), parsed)
         result = {"screening": assessment.model_dump(mode="json"), "semantic": None}
+        if args.grouped:
+            from backend.app.services.eligibility.grouped import verify_grouped
+
+            result["grouped"] = verify_grouped(assessment.profile, assessment.parsed)
         if args.semantic:
             from backend.app.services.eligibility.semantic import LocalNLI, advise
 

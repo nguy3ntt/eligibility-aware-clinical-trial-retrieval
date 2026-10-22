@@ -1,5 +1,10 @@
 # Backend
 
+Experimental API options `grouped: true` on screening and `method: field_passages` on
+search preserve ordinary defaults and source evidence. The passage method requires a
+separately prepared artifact selected by `API_PASSAGE_ID`. See
+[behavior and manual checks](../docs/grouped-and-passage-methods.md).
+
 The local research API exposes curated synthetic cases, trial evidence, search, screening and saved experiments through `/v1`. [The API guide](../docs/local-research-api.md) includes startup, request contracts and manual checks. The Qdrant boundary remains loopback-only and validates artifact/model contracts; PostgreSQL stores immutable source catalogs and complete evidence packets. Source ingestion stays in pipelines.
 
 The backend orchestrates existing services without notebook state. `services/application.py` preserves retrieval defaults, bounds expensive operations and records reproducible request identities. `api/boundary.py` limits bodies, rejects remote Host/Origin values and prevents failures from echoing inputs or logging exceptions with sensitive details. No arbitrary patient-text entry point is accepted.

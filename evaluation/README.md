@@ -1,5 +1,10 @@
 # Evaluation
 
+`evaluation.method_extensions grouped|retrieval --output-id <fresh-id>` records fixed
+development diagnostics for grouped logic and field/passage retrieval. It preserves
+negative results and does not reuse 2021 cases as unseen evaluation. See
+[the controlled report](../docs/experiments/0015-grouped-and-passage-methods.md).
+
 ## Independent external-case evaluation
 
 `python -m evaluation.independent` freezes configuration before TREC 2021 topic

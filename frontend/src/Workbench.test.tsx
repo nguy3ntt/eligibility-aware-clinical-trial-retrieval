@@ -98,7 +98,11 @@ it("screens a selected pair and clears evidence when NLI selection changes", asy
     false,
     expect.any(AbortSignal),
   );
-  await user.click(screen.getByRole("checkbox"));
+  await user.click(
+    screen.getByRole("checkbox", {
+      name: "Include optional learned NLI advisories (never promoted)",
+    }),
+  );
   expect(screen.queryByText("Eligibility evidence")).not.toBeInTheDocument();
 });
 it("keeps learned advice separate from unknown deterministic outcomes", () => {

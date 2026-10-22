@@ -11,7 +11,7 @@ from backend.app.schemas.patient import StrictModel
 
 class SearchRequest(StrictModel):
     case_id: str = Field(pattern=r"^[A-Za-z0-9:_-]{1,120}$")
-    method: Literal["dense", "sparse", "hybrid"] = "dense"
+    method: Literal["dense", "sparse", "hybrid", "field_passages"] = "dense"
     filter: Literal["age_sex", "none"] = "age_sex"
     fact_extractor: Literal["legacy", "profile"] = "legacy"
     top_k: int = Field(default=3, ge=1, le=10, strict=True)
@@ -23,6 +23,7 @@ class ScreeningRequest(StrictModel):
     case_id: str = Field(pattern=r"^[A-Za-z0-9:_-]{1,120}$")
     trial_id: str = Field(pattern=r"^NCT[0-9]{8}$")
     semantic: bool = Field(default=False, strict=True)
+    grouped: bool = Field(default=False, strict=True)
 
 
 class ExperimentRequest(StrictModel):
@@ -56,10 +57,11 @@ class ScreeningResult(StrictModel):
     assessment: TrialAssessment
     explanation: dict
     semantic: dict | None
+    grouped: dict | None = None
 
 
 class SearchResult(StrictModel):
-    method: Literal["dense", "sparse", "hybrid"]
+    method: Literal["dense", "sparse", "hybrid", "field_passages"]
     filter: Literal["age_sex", "none"]
     fact_extractor: Literal["legacy", "profile"]
     filter_facts: dict | None
@@ -75,6 +77,7 @@ class SearchResult(StrictModel):
     benchmark_comparable: Literal[False]
     semantic_promotion: Literal[False]
     default_retrieval_changed: Literal[False]
+    passage_retrieval: dict | None = None
 
 
 class SearchResponse(OperationResponse):

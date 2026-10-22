@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { groupedSchema, groupedAligns } from "./groupedContracts";
 import {
   profileSchema,
   retrievalSchema,
@@ -133,6 +134,7 @@ export const screeningSchema = envelope
         case_id: z.string(),
         trial_id: z.string(),
         semantic: z.boolean(),
+        grouped: z.boolean().optional(),
       })
       .passthrough(),
     result: z
@@ -140,6 +142,7 @@ export const screeningSchema = envelope
         assessment: assessmentSchema,
         explanation: z.record(z.string(), z.unknown()),
         semantic: semanticSchema.nullable(),
+        grouped: groupedSchema.nullable().optional(),
       })
       .passthrough(),
   })
@@ -150,6 +153,11 @@ export const screeningSchema = envelope
       a.profile.case.case_id !== p.request.case_id ||
       a.parsed.source.trial_id !== p.request.trial_id ||
       p.request.semantic !== (s !== null)
+    )
+      return false;
+    if (
+      Boolean(p.request.grouped) !== Boolean(p.result.grouped) ||
+      (p.result.grouped && !groupedAligns(p.result.grouped, a))
     )
       return false;
     return (
