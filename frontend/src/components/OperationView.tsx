@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Operation } from "../api/workbenchContracts";
 import { EvidencePanel } from "./EvidencePanel";
 import { GroupedEvidence } from "./GroupedEvidence";
+import { MissingInformationReview } from "./MissingInformationReview";
 import { Results } from "./Results";
 import { JsonEvidence, words } from "./Common";
 
@@ -37,6 +38,7 @@ export function OperationView({
               assessment={p.result.assessment}
             />
           )}
+          <MissingInformationReview plan={p.result.review_plan} />
           <EvidencePanel
             assessment={p.result.assessment}
             semantic={p.result.semantic}

@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     api_index_id: str = "dense-m3-minilm-v1"
     api_evidence_id: str = "reranking-evidence-v1"
     api_passage_id: str = "field-passages-v2"
+    api_domain_reranker_id: str = "domain-hard-reranker-v1"
     api_collection: str = "trials_hybrid_v1"
 
 

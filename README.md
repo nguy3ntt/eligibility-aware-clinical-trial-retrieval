@@ -62,10 +62,12 @@ The system therefore separates **relevance retrieval** from **eligibility assess
 | Hybrid retrieval | Fuse lexical and semantic rankings |
 | Metadata filtering | Apply age, sex, status, phase, country, and other structured constraints |
 | Reranking | Measure optional cross-encoder reordering, including negative results |
+| Hard-negative relevance adaptation | Separate case/trial splits, frozen-backbone head training and random-negative control; [no learned gain found](docs/experiments/0016-domain-hard-negative-reranking.md) |
 | Patient fact extraction | Structure age, conditions, medications, treatments, and measurements |
 | Eligibility parsing | Split inclusion and exclusion text into atomic criteria |
 | Criterion verification | Label individual criteria as satisfied, violated, unknown, or not applicable |
 | Evidence explanations | Link every assessment to exact source text and patient facts |
+| Missing-information review | [Prioritise source-linked fact gaps](docs/missing-information-review.md), with separate interpretation tasks and unchanged screening |
 | Retrieval laboratory | Compare methods, ablations, latency, and ANN recall |
 
 The [full-corpus experiment](docs/experiments/0011-full-corpus-release-and-hardening.md)

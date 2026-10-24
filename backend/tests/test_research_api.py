@@ -82,6 +82,46 @@ def test_defaults_and_openapi(setup_api):
     assert "TrialAssessment" in schema["components"]["schemas"]
     assert "text" not in schema["components"]["schemas"]["SearchRequest"]["properties"]
     assert client.get("/docs").status_code == 200
+    assert request.reranker_variant == "base"
+
+
+def test_domain_reranker_requires_explicit_reranking_and_fails_if_absent(setup_api):
+    client, service, store = setup_api
+    body = {"case_id": "reranking-demo", "reranker_variant": "domain_hard"}
+    assert client.post("/v1/search", json=body).status_code == 422
+    service.settings = service.settings.model_copy(
+        update={"api_domain_reranker_id": "missing-unit-adapter"}
+    )
+    response = client.post("/v1/search", json={**body, "rerank": True})
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "domain_reranker_unavailable"
+    assert not store.data["operations"]
+
+
+def test_domain_model_identity_is_part_of_saved_operation_provenance(
+    setup_api, tmp_path, monkeypatch
+):
+    _, service, store = setup_api
+    monkeypatch.chdir(tmp_path)
+    root = tmp_path / "models/unit-adapter"
+    root.mkdir(parents=True)
+    path = root / "manifest.json"
+    path.write_text('{"invented":"first"}')
+    service.settings = service.settings.model_copy(
+        update={"api_domain_reranker_id": "unit-adapter"}
+    )
+    service.search = lambda _: {"invented_unit_result": True}
+    request = SearchRequest(case_id="reranking-demo", rerank=True, reranker_variant="domain_hard")
+    first = service.execute("search", request)
+    assert service.execute("search", request).replayed
+    path.write_text('{"invented":"second"}')
+    second = service.execute("search", request)
+    assert first.operation_id != second.operation_id
+    assert (
+        first.provenance["domain_adapter_manifest_sha256"]
+        != second.provenance["domain_adapter_manifest_sha256"]
+    )
+    assert len(store.data["operations"]) == 2
 
 
 def test_grouped_screening_is_opt_in_and_stored_separately(setup_api):
@@ -144,6 +184,13 @@ def test_screening_and_persistent_replay(setup_api, trial_id, status):
     assert first.status_code == 200, first.text
     packet = first.json()
     assert packet["result"]["assessment"]["status"] == status
+    plan = packet["result"]["review_plan"]
+    assert plan["schema_version"] == "missing-information-review-v1"
+    assert plan["mode"] == "ordinary" and plan["changes_screening"] is False
+    assert plan["basis"][0]["assessment_id"] == packet["result"]["assessment"]["assessment_id"]
+    assert (
+        plan["basis"][0]["blocking_ids"] == packet["result"]["assessment"]["blocking_criterion_ids"]
+    )
     assert packet["result"]["explanation"]["assessment"] == packet["result"]["assessment"]
     assert packet["replayed"] is False
     replay = client.post("/v1/screening", json=body).json()

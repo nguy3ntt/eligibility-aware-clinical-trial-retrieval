@@ -13,6 +13,7 @@ export type RetrievalOptions = {
   fact_extractor: "legacy" | "profile";
   rerank: boolean;
   rerank_depth: number;
+  reranker_variant?: "base" | "domain_hard";
   top_k: number;
 };
 export const defaults: RetrievalOptions = {
@@ -36,6 +37,8 @@ export function validateRetrieval(
     packet.result.fact_extractor !== options.fact_extractor ||
     Boolean(packet.result.reranker) !==
       (options.rerank && packet.result.candidate_count > 0) ||
+    (packet.request.reranker_variant ?? "base") !==
+      (options.reranker_variant ?? "base") ||
     packet.result.results.length > options.top_k ||
     new Set(packet.result.results.map((r) => r.trial_id)).size !==
       packet.result.results.length ||

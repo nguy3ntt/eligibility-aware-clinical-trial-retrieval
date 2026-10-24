@@ -2,11 +2,12 @@
 
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from backend.app.schemas.criteria import ParsedEligibility
 from backend.app.schemas.eligibility import TrialAssessment
 from backend.app.schemas.patient import StrictModel
+from backend.app.schemas.review import ReviewPlan
 
 
 class SearchRequest(StrictModel):
@@ -17,6 +18,13 @@ class SearchRequest(StrictModel):
     top_k: int = Field(default=3, ge=1, le=10, strict=True)
     rerank: bool = Field(default=False, strict=True)
     rerank_depth: int = Field(default=20, ge=1, le=50, strict=True)
+    reranker_variant: Literal["base", "domain_hard"] = "base"
+
+    @model_validator(mode="after")
+    def explicit_adaptation(self):
+        if self.reranker_variant != "base" and not self.rerank:
+            raise ValueError("experimental reranker requires explicit reranking")
+        return self
 
 
 class ScreeningRequest(StrictModel):
@@ -58,6 +66,7 @@ class ScreeningResult(StrictModel):
     explanation: dict
     semantic: dict | None
     grouped: dict | None = None
+    review_plan: ReviewPlan | None = None
 
 
 class SearchResult(StrictModel):

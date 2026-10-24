@@ -120,9 +120,33 @@ export function RetrievalLab({
             <input
               type="checkbox"
               checked={options.rerank}
-              onChange={(e) => change({ rerank: e.target.checked })}
+              onChange={(e) =>
+                change({
+                  rerank: e.target.checked,
+                  ...(!e.target.checked
+                    ? { reranker_variant: "base" as const }
+                    : {}),
+                })
+              }
             />
             Opt into cross-encoder reranking
+          </label>
+          <label>
+            Reranker model
+            <select
+              disabled={!options.rerank || run.busy}
+              value={options.reranker_variant ?? "base"}
+              onChange={(e) =>
+                change({
+                  reranker_variant: e.target.value as "base" | "domain_hard",
+                })
+              }
+            >
+              <option value="base">Original pinned relevance model</option>
+              <option value="domain_hard">
+                Domain hard-negative head · experimental
+              </option>
+            </select>
           </label>
           <label>
             Reranked prefix
@@ -141,6 +165,14 @@ export function RetrievalLab({
           {run.busy ? "Comparing…" : "Run comparison"}
         </button>
       </form>
+      {options.rerank && options.reranker_variant === "domain_hard" && (
+        <p className="notice">
+          Experimental relevance-layer adaptation with a frozen language-model
+          backbone. Training, development and retrospective test cases were
+          previously inspected. This is not unseen-case validation or an
+          eligibility decision. No default promotion.
+        </p>
+      )}
       {options.method === "field_passages" && (
         <p className="notice">
           Uses a separately prepared 443-trial field/passage artifact and the

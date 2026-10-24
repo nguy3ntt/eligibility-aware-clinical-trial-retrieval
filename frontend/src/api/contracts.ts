@@ -176,6 +176,7 @@ export const retrievalSchema = z
         filter: z.enum(["age_sex", "none"]),
         fact_extractor: z.enum(["legacy", "profile"]),
         rerank: z.boolean(),
+        reranker_variant: z.enum(["base", "domain_hard"]).optional(),
         rerank_depth: z.number().int().min(1).max(50).optional(),
         top_k: z.number().int().min(1).max(10),
       })
@@ -260,6 +261,32 @@ export const retrievalSchema = z
       hybrid: "reciprocal_rank_fusion",
       field_passages: "reciprocal_rank_fusion",
     }[q.method];
+    if (
+      r.reranker &&
+      (r.reranker.variant ?? "base") !== (q.reranker_variant ?? "base")
+    )
+      return false;
+    if (
+      q.reranker_variant === "domain_hard" &&
+      (!q.rerank ||
+        (r.candidate_count > 0 &&
+          (r.reranker?.variant !== "domain_hard" ||
+            r.reranker?.promoted !== false ||
+            !hash.safeParse(r.reranker?.adapter_manifest_sha256).success)) ||
+        r.results.some(
+          (row) =>
+            row.relevance.ranking.reranker &&
+            (row.relevance.ranking.reranker.variant !== "domain_hard" ||
+              row.relevance.ranking.reranker.adapter_manifest_sha256 !==
+                r.reranker?.adapter_manifest_sha256 ||
+              row.relevance.ranking.reranker.promoted !== false ||
+              !z
+                .number()
+                .finite()
+                .safeParse(row.relevance.ranking.reranker.base_score).success),
+        ))
+    )
+      return false;
     if (
       q.method === "field_passages" &&
       (!r.passage_retrieval ||

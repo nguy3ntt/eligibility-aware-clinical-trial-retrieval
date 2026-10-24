@@ -1,5 +1,16 @@
 # Themis Trial research workspace
 
+Screening and saved-operation views show a recorded **Prioritised information review**
+panel. Counts explain fact-gap reuse; interpretation limitations and settled grouped
+branches stay separate. Existing blockers remain visible. Historical packets without
+a plan are never recomputed. See [manual checks and limits](../docs/missing-information-review.md).
+
+The retrieval laboratory offers an explicit experimental domain hard-negative model
+selector when reranking is enabled. It discloses case exposure, no promotion, and the
+actual selection of the original head at epoch zero. Ordinary search is unchanged;
+saved historical packets retain their model identity. See
+[results and manual checks](../docs/domain-hard-negatives.md).
+
 The optional grouped-screening checkbox and field/passage laboratory method expose
 experimental source-linked methods without changing ordinary search/screening defaults.
 Saved operations retain the separate interpretation and passage evidence. See

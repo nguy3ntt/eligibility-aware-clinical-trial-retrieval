@@ -44,6 +44,7 @@ class ResearchService:
         self.store, self.settings = store, settings
         self.lock = threading.Lock()
         self.encoder = self.reranker = self.nli = self.prepared = None
+        self.domain_reranker = None
         self.code = implementation()
         self.versions = {}
         for name in (
@@ -156,6 +157,15 @@ class ResearchService:
                 },
             }
             # Changing fixture labels cannot reuse old results.
+            if kind == "search" and request.rerank and request.reranker_variant == "domain_hard":
+                adapter = Path("models") / local_id(self.settings.api_domain_reranker_id)
+                if not (adapter / "manifest.json").is_file():
+                    raise ServiceError(
+                        503,
+                        "domain_reranker_unavailable",
+                        "Prepare the optional domain reranker; see docs/domain-hard-negatives.md.",
+                    )
+                provenance["domain_adapter_manifest_sha256"] = file_hash(adapter / "manifest.json")
             if kind == "search" and request.method == "field_passages":
                 passage_root = Path(self.settings.processed_data_dir) / local_id(
                     self.settings.api_passage_id
@@ -214,6 +224,12 @@ class ResearchService:
             if self.nli is None:
                 self.nli = LocalNLI()
             result["semantic"] = advise(assessment, self.nli)
+        from backend.app.services.eligibility.review import prioritise_missing
+
+        result["review_plan"] = prioritise_missing(
+            [assessment],
+            grouped={request.trial_id: result["grouped"]} if result["grouped"] else None,
+        ).model_dump(mode="json")
         return result
 
     def search(self, request):
@@ -284,14 +300,31 @@ class ResearchService:
             ranking = rank_results(branches, method=request.method, k=100)
         model = None
         if request.rerank and ranking:
-            if self.reranker is None:
-                self.reranker = LocalReranker()
+            if request.reranker_variant == "domain_hard":
+                from backend.app.services.retrieval.domain_reranker import DomainReranker
+
+                adapter = Path("models") / local_id(self.settings.api_domain_reranker_id)
+                if self.domain_reranker is None:
+                    self.domain_reranker = DomainReranker(
+                        adapter, source_artifact_sha256=contract["artifact_sha256"]
+                    )
+                if self.domain_reranker.adapter_manifest != file_hash(adapter / "manifest.json"):
+                    raise EvidenceError("domain reranker changed after loading")
+                selected_reranker = self.domain_reranker
+            else:
+                if self.reranker is None:
+                    self.reranker = LocalReranker()
+                selected_reranker = self.reranker
             documents = [
                 self.record("trials", r["trial_id"])["row"]["representations"]["summary"]
                 for r in ranking[: request.rerank_depth]
             ]
-            ranking = reorder(ranking, self.reranker.score(case, documents))
-            model = self.reranker.metadata
+            ranking = reorder(ranking, selected_reranker.score(case, documents))
+            model = {**selected_reranker.metadata, "variant": request.reranker_variant}
+            if request.reranker_variant == "domain_hard":
+                model["case_exposure"] = selected_reranker.exposure.get(
+                    case.case_id, "outside_recorded_study"
+                )
         else:
             ranking = [
                 {**r, "rank": i + 1, "original_rank": i + 1, "reranker": None}

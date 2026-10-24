@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { groupedSchema, groupedAligns } from "./groupedContracts";
+import { reviewPlanSchema, reviewAligns } from "./reviewContracts";
 import {
   profileSchema,
   retrievalSchema,
@@ -143,6 +144,7 @@ export const screeningSchema = envelope
         explanation: z.record(z.string(), z.unknown()),
         semantic: semanticSchema.nullable(),
         grouped: groupedSchema.nullable().optional(),
+        review_plan: reviewPlanSchema.nullable().optional(),
       })
       .passthrough(),
   })
@@ -158,6 +160,11 @@ export const screeningSchema = envelope
     if (
       Boolean(p.request.grouped) !== Boolean(p.result.grouped) ||
       (p.result.grouped && !groupedAligns(p.result.grouped, a))
+    )
+      return false;
+    if (
+      p.result.review_plan &&
+      !reviewAligns(p.result.review_plan, a, p.result.grouped)
     )
       return false;
     return (

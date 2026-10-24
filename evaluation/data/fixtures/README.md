@@ -1,5 +1,12 @@
 # Test fixtures
 
+`missing_information_review.json` contains 21 entirely invented review-order contracts.
+Its ordinary `expected` lists are empty because it tests the separate worklist, not new
+screening labels. Use `evaluation.missing_information_review` or CLI `--review` with
+the specified pair/mode. It includes an explicitly unsupported age wording, unit and
+conflict checks, deduplication and settled grouped branches. No independent clinical
+utility claim is made; prior fixtures are preserved.
+
 `grouped_screening.json` contains 30 entirely invented grouped-logic development
 contracts. Its expected list is intentionally empty because the separate grouped tree,
 not the ordinary flat criterion summary, is evaluated. Use `pipelines.screening --grouped`

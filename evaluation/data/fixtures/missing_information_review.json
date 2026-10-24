@@ -1,0 +1,156 @@
+{
+  "schema_version": "screening-fixtures-v1",
+  "synthetic": true,
+  "dataset_id": "invented-missing-information-review-v1",
+  "pairs": [
+    {
+      "id": "review-deduplicate-age",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.\n- Age <= 65 years.\n- Creatinine <= 1.5 mg/dL.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["age", "year"], ["creatinine", "mg/dL"]],
+      "review_criteria": [2, 1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-conflicting-evidence",
+      "patient": "Hemoglobin 12 g/dL. Hemoglobin 8 g/dL.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["hemoglobin", "g/dL"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-unit-no-conversion",
+      "patient": "Hemoglobin 120 g/L.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["hemoglobin", "g/dL"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-unsupported-is-not-fact-gap",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Diagnosed with asthma.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [], "review_criteria": [], "interpretations": 1, "settled": 0
+    },
+    {
+      "id": "review-unknown-preamble",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Special participation requirements apply.\nInclusion Criteria:\n- Age >= 18 years.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [], "review_criteria": [], "interpretations": 2, "settled": 0
+    },
+    {
+      "id": "review-known-match",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.",
+      "expected": [], "status": "potential_match", "grouped": false,
+      "review_keys": [], "review_criteria": [], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-blocker-preserved",
+      "patient": "17-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.\n- Hemoglobin >= 10 g/dL.",
+      "expected": [], "status": "likely_exclusion", "grouped": false,
+      "review_keys": [["hemoglobin", "g/dL"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-family-is-not-patient",
+      "patient": "His mother is a 40-year-old woman.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["age", "year"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-distinct-units",
+      "patient": "The synthetic record contains no laboratory values.",
+      "eligibility": "Inclusion Criteria:\n- Hemoglobin >= 10 g/dL.\n- Hemoglobin <= 160 g/L.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["hemoglobin", "g/L"], ["hemoglobin", "g/dL"]],
+      "review_criteria": [1, 1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-gate-sex-first",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >= 10 g/dL.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["sex", null]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-or-settled",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- (Age >= 18 years) OR (Hemoglobin >= 10 g/dL).",
+      "expected": [], "status": "potential_match", "grouped": true,
+      "review_keys": [], "review_criteria": [], "interpretations": 0, "settled": 1
+    },
+    {
+      "id": "review-or-unresolved",
+      "patient": "17-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- (Age >= 18 years) OR (Hemoglobin >= 10 g/dL).",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [["hemoglobin", "g/dL"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-and-already-blocked",
+      "patient": "17-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- (Age >= 18 years) AND (Hemoglobin >= 10 g/dL).",
+      "expected": [], "status": "likely_exclusion", "grouped": true,
+      "review_keys": [], "review_criteria": [], "interpretations": 0, "settled": 1
+    },
+    {
+      "id": "review-nested-branch",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- ((Age >= 18 years) OR (Hemoglobin >= 10 g/dL)) AND (Creatinine <= 1.5 mg/dL).",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [["creatinine", "mg/dL"]], "review_criteria": [1], "interpretations": 0, "settled": 1
+    },
+    {
+      "id": "review-not",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- NOT (Age < 18 years).",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [["age", "year"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-inapplicable-gate",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- For female participants: Hemoglobin >= 10 g/dL.",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [], "review_criteria": [], "interpretations": 0, "settled": 1
+    },
+    {
+      "id": "review-scope-before-facts",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- Age >= 18 years unless the investigator agrees.",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [], "review_criteria": [], "interpretations": 1, "settled": 0
+    },
+    {
+      "id": "review-grouped-unsupported",
+      "patient": "40-year-old man.",
+      "eligibility": "Inclusion Criteria:\n- Diagnosed with asthma.",
+      "expected": [], "status": "insufficient_information", "grouped": true,
+      "review_keys": [], "review_criteria": [], "interpretations": 1, "settled": 0
+    },
+    {
+      "id": "review-platelets",
+      "patient": "The synthetic record contains no laboratory values.",
+      "eligibility": "Inclusion Criteria:\n- Platelets >= 100 x10^9/L.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["platelets", "x10^9/L"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    },
+    {
+      "id": "review-unrecognised-age-wording",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- Participants must be 18 years or older.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [], "review_criteria": [], "interpretations": 1, "settled": 0
+    },
+    {
+      "id": "review-open-age",
+      "patient": "The synthetic record contains no demographic values.",
+      "eligibility": "Inclusion Criteria:\n- Age 18 years or older.",
+      "expected": [], "status": "insufficient_information", "grouped": false,
+      "review_keys": [["age", "year"]], "review_criteria": [1], "interpretations": 0, "settled": 0
+    }
+  ]
+}

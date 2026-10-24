@@ -1,5 +1,17 @@
 # Evaluation
 
+`evaluation.missing_information_review evaluate|verify --output-id <id>` evaluates
+21 authored review-order contracts and audits outcome invariance on the original 150
+screening pairs, with separate ordinary/grouped and per-case aggregate plans. It saves
+all dispositions and source identities; fewer questions is not accuracy or clinical
+benefit. See [the reviewed audit](../docs/experiments/0017-missing-information-review.md).
+
+`python -m evaluation.domain_hard_negatives` verifies immutable fit/test inventories and
+chronology, reproduces both relevance-head training controls from cached frozen features,
+then reproduces test rankings, metrics and intervals. It never overwrites artifacts or
+promotes a model. This is retrospective development evaluation, not a new unseen holdout.
+See [the negative result](../docs/experiments/0016-domain-hard-negative-reranking.md).
+
 `evaluation.method_extensions grouped|retrieval --output-id <fresh-id>` records fixed
 development diagnostics for grouped logic and field/passage retrieval. It preserves
 negative results and does not reuse 2021 cases as unseen evaluation. See

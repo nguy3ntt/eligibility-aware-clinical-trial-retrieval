@@ -1,5 +1,19 @@
 # Backend
 
+New screening packets include a separate `review_plan` from
+`services/eligibility/review.py`. It orders explicit missing-fact gaps by source reuse,
+keeps interpretation limits/settled grouped branches separate, and preserves blockers.
+The source-reproduced service supports 1–10 trials of the same synthetic case; the API
+shows only the selected pair. Historical packets may lack the field. No assessment,
+clinical urgency or inference default changes. See [the review guide](../docs/missing-information-review.md).
+
+Search accepts optional `reranker_variant: domain_hard` only with `rerank: true`.
+The separate prepared classifier-head artifact is validated against original model,
+source, code and runtime identities; it never replaces the original model or defaults.
+Missing optional artifacts fail with a structured 503; no training occurs on requests.
+Case exposure and the selected epoch-zero result remain explicit. See
+[the hard-negative experiment guide](../docs/domain-hard-negatives.md).
+
 Experimental API options `grouped: true` on screening and `method: field_passages` on
 search preserve ordinary defaults and source evidence. The passage method requires a
 separately prepared artifact selected by `API_PASSAGE_ID`. See

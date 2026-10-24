@@ -6,6 +6,7 @@ import { useOperation } from "../hooks/useOperation";
 import { ErrorPanel, JsonEvidence, Loading } from "./Common";
 import { EvidencePanel } from "./EvidencePanel";
 import { GroupedEvidence } from "./GroupedEvidence";
+import { MissingInformationReview } from "./MissingInformationReview";
 
 export function ScreeningWorkspace({
   caseId,
@@ -126,6 +127,7 @@ export function ScreeningWorkspace({
               assessment={run.data.result.assessment}
             />
           )}
+          <MissingInformationReview plan={run.data.result.review_plan} />
           <EvidencePanel
             assessment={run.data.result.assessment}
             semantic={run.data.result.semantic}

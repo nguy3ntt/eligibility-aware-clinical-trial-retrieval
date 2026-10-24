@@ -1,5 +1,16 @@
 # Pipelines
 
+`pipelines.screening --review` adds a separate source-linked review worklist; `--grouped`
+uses the experimental tree's active branches while retaining ordinary assessment evidence.
+It does not acquire or invent facts, convert units, train a model or change outcomes.
+See [invented examples and manual checks](../docs/missing-information-review.md).
+
+`pipelines.hard_negatives prepare|verify` mines externally judged relevance pairs using
+separate case/trial group partitions. `pipelines.train_domain_reranker fit|score-test|verify`
+fits and seals a frozen-backbone relevance-head experiment with a matched random control.
+No model download or database change is implicit. The selected head retained epoch zero;
+see [results, prerequisites and manual checks](../docs/domain-hard-negatives.md).
+
 `pipelines.field_passages build|verify|search` prepares a separate bounded field/passage
 artifact with original XML spans and exact MiniLM vectors; it never overwrites an active
 index. `pipelines.screening --grouped` adds a separate three-valued logic tree. Both are

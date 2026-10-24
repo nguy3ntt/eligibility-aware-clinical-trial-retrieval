@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--trial-id")
     parser.add_argument("--semantic", action="store_true")
     parser.add_argument("--grouped", action="store_true")
+    parser.add_argument("--review", action="store_true")
     parser.add_argument("--output-id", type=local_id)
     args = parser.parse_args()
     external = bool(args.cases or args.topics)
@@ -66,6 +67,13 @@ def main():
             from backend.app.services.eligibility.semantic import LocalNLI, advise
 
             result["semantic"] = advise(assessment, LocalNLI())
+        if args.review:
+            from backend.app.services.eligibility.review import prioritise_missing
+
+            result["review_plan"] = prioritise_missing(
+                [assessment],
+                grouped={parsed.source.trial_id: result["grouped"]} if args.grouped else None,
+            ).model_dump(mode="json")
         if output:
             write_json(output / "screening.json", result)
         print(json.dumps(result, indent=2))

@@ -45,6 +45,16 @@ export function Results({
         over a result or use its details button to inspect the recorded score
         and source context.
       </p>
+      {search.result.reranker?.variant === "domain_hard" && (
+        <p className="notice">
+          Experimental domain hard-negative relevance head · NOT PROMOTED. Case
+          exposure: {String(search.result.reranker.case_exposure ?? "unknown")}.
+          The study used inspected public synthetic cases; these scores are not
+          eligibility probabilities or new unseen-case evidence.
+          {search.result.reranker.selected_epoch === 0 &&
+            " Development selection retained the original head (epoch 0); no trained checkpoint earned a replacement."}
+        </p>
+      )}
       {search.result.query_truncated && (
         <p className="notice">
           The query exceeded the encoder limit and was shortened. Full source
